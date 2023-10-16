@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "buildJison": "ts-jison -t typescript -n TsCalc -n TsCalc -o ./src/jison/ts-calculator.ts ./src/jison/scripts.jison",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -18,5 +19,8 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-react": "^7.33.2",
     "typescript": "*"
+  },
+  "dependencies": {
+    "@ts-jison/parser-generator": "0.4.1-alpha.2"
   }
 }
