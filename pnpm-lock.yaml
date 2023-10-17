@@ -1,6 +1,8 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@ts-jison/lexer': 0.4.1-alpha.1
+  '@ts-jison/parser': 0.4.1-alpha.1
   '@ts-jison/parser-generator': 0.4.1-alpha.2
   '@typescript-eslint/eslint-plugin': ^6.4.0
   eslint: ^8.0.1
@@ -12,6 +14,8 @@ specifiers:
   typescript: '*'
 
 dependencies:
+  '@ts-jison/lexer': 0.4.1-alpha.1
+  '@ts-jison/parser': 0.4.1-alpha.1
   '@ts-jison/parser-generator': 0.4.1-alpha.2
 
 devDependencies:

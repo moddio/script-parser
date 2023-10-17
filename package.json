@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "buildJison": "ts-jison -t typescript -n TsCalc -n TsCalc -o ./src/jison/ts-calculator.ts ./src/jison/scripts.jison",
+    "buildJison": "ts-jison -t typescript -n TsCalc -n TsCalc -o ./src/jison/scripts.ts ./src/jison/scripts.jison",
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  },  
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -21,6 +21,8 @@
     "typescript": "*"
   },
   "dependencies": {
+    "@ts-jison/lexer": "0.4.1-alpha.1",
+    "@ts-jison/parser": "0.4.1-alpha.1",
     "@ts-jison/parser-generator": "0.4.1-alpha.2"
   }
 }
