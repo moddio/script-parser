@@ -1,5 +1,5 @@
 import jsonFile from 'jsonfile'
-jsonFile.readFile('./actions.json', (err, obj) => {
+jsonFile.readFile('./src/actions/actions.json', (err, obj) => {
   if (err !== null) {
     console.error(err)
   }
@@ -27,6 +27,5 @@ jsonFile.readFile('./actions.json', (err, obj) => {
       return (count > 4) ? '' : match
     })
   })
-  jsonFile.writeFileSync('./converted_actions.json', actionsObj)
-  console.log(JSON.stringify(actionsObj))
+  jsonFile.writeFileSync('./src/actions/converted_actions.json', actionsObj)
 })

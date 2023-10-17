@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "buildJison": "ts-jison -t typescript -n TsCalc -n TsCalc -o ./src/jison/scripts.ts ./src/jison/scripts.jison",
+    "buildActions": "ts-node-esm ./src/actions/converter.ts",
+    "build": "pnpm run buildActions && pnpm run buildJison",
     "test": "echo \"Error: no test specified\" && exit 1"
-  },  
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -23,6 +25,8 @@
   "dependencies": {
     "@ts-jison/lexer": "0.4.1-alpha.1",
     "@ts-jison/parser": "0.4.1-alpha.1",
-    "@ts-jison/parser-generator": "0.4.1-alpha.2"
+    "@ts-jison/parser-generator": "0.4.1-alpha.2",
+    "@types/jsonfile": "^6.1.2",
+    "jsonfile": "^6.1.0"
   }
 }
