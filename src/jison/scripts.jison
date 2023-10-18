@@ -88,18 +88,18 @@ e
         {$$ = new Function(...funcs[$NAME].split('#')).apply(undefined, $expression_list);}
     | STRING
         {$$ = yytext.slice(1, yytext.length-1)}
-    | expression_list '.' NAME
+     | e'.' NAME
         {$$ = attr[$NAME].apply(undefined,
-$expression_list); }
-    | expression_list '[' NAME ']'
+[$1]); }
+    | e '[' NAME ']'
         {$$ = attr[$NAME].apply(undefined,
-$expression_list); }
-    | expression_list '[' "'" NAME "'" ']'
+[$1]); }
+    | e '[' "'" NAME "'" ']'
         {$$ = attr[$NAME].apply(undefined,
-$expression_list); }
-    | expression_list '[' '"' NAME '"' ']'
+[$1]); }
+    | e '[' '"' NAME '"' ']'
         {$$ = attr[$NAME].apply(undefined,
-$expression_list); }
+[$1]); }
     | STRING '+' STRING
        { $$ =  {
                     "function": "concat",
