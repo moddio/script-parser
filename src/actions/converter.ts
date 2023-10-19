@@ -4,6 +4,7 @@ jsonFile.readFile('./src/actions/actions.json', (err, obj) => {
     console.error(err)
   }
   const actionsObj: any = {}
+  const keywordsArr: string[] = []
   Object.values(obj).map((v, idx) => {
     const value = v as any
     const actionObj: any = {
@@ -26,6 +27,8 @@ jsonFile.readFile('./src/actions/actions.json', (err, obj) => {
       count++
       return (count > 4) ? '' : match
     })
+    keywordsArr.push(value.key)
   })
+  jsonFile.writeFileSync('./src/actions/keywords.json', keywordsArr)
   jsonFile.writeFileSync('./src/actions/converted_actions.json', actionsObj)
 })
