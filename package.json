@@ -2,11 +2,11 @@
   "name": "script-parser",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "buildJison": "ts-jison -t typescript -n TsCalc -n TsCalc -o ./src/jison/scripts.ts ./src/jison/scripts.jison",
     "buildActions": "ts-node-esm ./src/actions/converter.ts",
-    "build": "pnpm run buildActions && pnpm run buildJison",
+    "build": "pnpm run buildActions && pnpm run buildJison && npx tsc -p tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

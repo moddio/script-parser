@@ -51,7 +51,7 @@
 %% /* language grammar */
 expressions
     : e EOF
-      { console.log($1); return $1; }
+      {  return $1; }
     ;
 
 expression_list
