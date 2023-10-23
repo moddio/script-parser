@@ -103,7 +103,7 @@ e
     | STRING '+' STRING
        { $$ =  {
                     "function": "concat",
-                    "textA": $1.slice(1, yytext.length-1),
-                    "textB": $3.slice(1, yytext.length-1)
+                    "textA": $1.slice(1, $1.length-1),
+                    "textB": $3.slice(1, $3.length-1)
                } }
     ;
