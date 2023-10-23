@@ -106,4 +106,22 @@ e
                     "textA": $1.slice(1, $1.length-1),
                     "textB": $3.slice(1, $3.length-1)
                } }
+    | STRING '+' NUMBER
+    { $$ =  {
+                    "function": "concat",
+                    "textA": $1.slice(1, $1.length-1),
+                    "textB": {
+                      "function": "numberToString",
+                      "value": Number($3)
+                    }
+               } }
+    | NUMBER '+' STRING
+    { $$ =  {
+                    "function": "concat",
+                    "textA": {
+                      "function": "numberToString",
+                      "value": Number($1)
+                    },
+                    "textB": $3.slice(1, $3.length-1),
+               } }
     ;
