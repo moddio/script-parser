@@ -124,4 +124,6 @@ e
                     },
                     "textB": $3.slice(1, $3.length-1),
                } }
+    | NUMBER '+' NUMBER
+    { $$ = { items: [{operator:"+"},$1, $3]}}
     ;
