@@ -56,20 +56,19 @@ class TsCalcParser extends parser_1.JisonParser {
                 this.$ = [$$[$0]];
                 break;
             case 7:
-            case 24:
-                this.$ = { items: [{ operator: "+" }, $$[$0 - 2], $$[$0]] };
+                this.$ = { function: 'calculate', items: [{ operator: "+" }, $$[$0 - 2], $$[$0]] };
                 break;
             case 8:
-                this.$ = { items: [{ operator: "-" }, $$[$0 - 2], $$[$0]] };
+                this.$ = { function: 'calculate', items: [{ operator: "-" }, $$[$0 - 2], $$[$0]] };
                 break;
             case 9:
-                this.$ = { items: [{ operator: "*" }, $$[$0 - 2], $$[$0]] };
+                this.$ = { function: 'calculate', items: [{ operator: "*" }, $$[$0 - 2], $$[$0]] };
                 break;
             case 10:
-                this.$ = { items: [{ operator: "/" }, $$[$0 - 2], $$[$0]] };
+                this.$ = { function: 'calculate', items: [{ operator: "/" }, $$[$0 - 2], $$[$0]] };
                 break;
             case 11:
-                this.$ = { items: [{ operator: "*" }, $$[$0], -1] };
+                this.$ = { function: 'calculate', items: [{ operator: "*" }, $$[$0], -1] };
                 break;
             case 12:
                 this.$ = $$[$0 - 1];
@@ -122,6 +121,9 @@ class TsCalcParser extends parser_1.JisonParser {
                     },
                     "textB": $$[$0].slice(1, $$[$0].length - 1),
                 };
+                break;
+            case 24:
+                this.$ = { items: [{ operator: "+" }, $$[$0 - 2], $$[$0]] };
                 break;
         }
     }
