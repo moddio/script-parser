@@ -69,15 +69,15 @@ expression_list
 
 e
     : e '+' e
-        { $$ = { items: [{operator:"+"},$1, $3]}}
+        { $$ = { function: 'calculate', items: [{operator:"+"},$1, $3]}}
     | e '-' e
-        { $$ = { items: [{operator:"-"},$1, $3]}}
+        { $$ = { function: 'calculate', items: [{operator:"-"},$1, $3]}}
     | e '*' e
-        { $$ = { items: [{operator:"*"},$1, $3]}}
+        { $$ = { function: 'calculate', items: [{operator:"*"},$1, $3]}}
     | e '/' e
-        { $$ = { items: [{operator:"/"},$1, $3]}}
+        { $$ = { function: 'calculate', items: [{operator:"/"},$1, $3]}}
     | '-' e %prec UMINUS
-        { $$ = { items: [{operator:"*"},$2, -1]} }
+        { $$ = { function: 'calculate', items: [{operator:"*"},$2, -1]} }
     | '(' e ')'
         { $$ = $2; }
     | NUMBER
