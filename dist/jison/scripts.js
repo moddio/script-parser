@@ -123,7 +123,7 @@ class TsCalcParser extends parser_1.JisonParser {
                 };
                 break;
             case 24:
-                this.$ = { items: [{ operator: "+" }, $$[$0 - 2], $$[$0]] };
+                this.$ = { function: 'calculate', items: [{ operator: "+" }, $$[$0 - 2], $$[$0]] };
                 break;
         }
     }
