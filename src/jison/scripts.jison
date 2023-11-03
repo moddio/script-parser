@@ -82,6 +82,8 @@ e
         { $$ = $2; }
     | NUMBER
         {$$ = Number(yytext);}
+    | NAME '('')'
+        {$$ = new Function(...funcs[$NAME].split('#')).apply(undefined, undefined);}
     | NAME '(' '"' expression_list '"' ')'
         {$$ = new Function(...funcs[$NAME].split('#')).apply(undefined, $expression_list);}
     | NAME '(' expression_list ')'
