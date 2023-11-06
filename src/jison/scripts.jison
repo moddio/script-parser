@@ -13,6 +13,9 @@
       };
     }
   }
+  function throwError(s:string) {
+    throw new Error(s)
+  }
 %}
 
 /* lexical grammar */
@@ -83,49 +86,42 @@ e
     | NUMBER
         {$$ = Number(yytext);}
     | NAME '('')'
-        {$$ = new Function(...funcs[$NAME].split('#')).apply(undefined, undefined);}
+        {$$ = new Function(func[$NAME]?...funcs[$NAME].split('#')).apply(undefined, undefined): throwError($NAME + " is undefined");}
     | NAME '(' '"' expression_list '"' ')'
-        {$$ = new Function(...funcs[$NAME].split('#')).apply(undefined, $expression_list);}
     | NAME '(' expression_list ')'
-        {$$ = new Function(...funcs[$NAME].split('#')).apply(undefined, $expression_list);}
+        {$$ = new Function(func[$NAME]?...funcs[$NAME].split('#')).apply(undefined, $expression_list): throwError($NAME + " is undefined");}
     | STRING
         {$$ = yytext.slice(1, yytext.length-1)}
      | e'.' NAME
-        {$$ = attr[$NAME].apply(undefined,
-[$1]); }
     | e '[' NAME ']'
-        {$$ = attr[$NAME].apply(undefined,
-[$1]); }
     | e '[' "'" NAME "'" ']'
-        {$$ = attr[$NAME].apply(undefined,
-[$1]); }
     | e '[' '"' NAME '"' ']'
         {$$ = attr[$NAME].apply(undefined,
 [$1]); }
-    | STRING '+' STRING
-       { $$ =  {
-                    "function": "concat",
-                    "textA": $1.slice(1, $1.length-1),
-                    "textB": $3.slice(1, $3.length-1)
-               } }
-    | STRING '+' NUMBER
-    { $$ =  {
-                    "function": "concat",
-                    "textA": $1.slice(1, $1.length-1),
-                    "textB": {
-                      "function": "numberToString",
-                      "value": Number($3)
-                    }
-               } }
-    | NUMBER '+' STRING
-    { $$ =  {
-                    "function": "concat",
-                    "textA": {
-                      "function": "numberToString",
-                      "value": Number($1)
-                    },
-                    "textB": $3.slice(1, $3.length-1),
-               } }
-    | NUMBER '+' NUMBER
-    { $$ = { function: 'calculate', items: [{operator:"+"}, $1, $3]}}
-    ;
+    // | STRING '+' STRING
+    //    { $$ =  {
+    //                 "function": "concat",
+    //                 "textA": $1.slice(1, $1.length-1),
+    //                 "textB": $3.slice(1, $3.length-1)
+    //            } }
+    // | STRING '+' NUMBER
+    // { $$ =  {
+    //                 "function": "concat",
+    //                 "textA": $1.slice(1, $1.length-1),
+    //                 "textB": {
+    //                   "function": "numberToString",
+    //                   "value": Number($3)
+    //                 }
+    //            } }
+    // | NUMBER '+' STRING
+    // { $$ =  {
+    //                 "function": "concat",
+    //                 "textA": {
+    //                   "function": "numberToString",
+    //                   "value": Number($1)
+    //                 },
+    //                 "textB": $3.slice(1, $3.length-1),
+    //            } }
+    // | NUMBER '+' NUMBER
+    // { $$ = { function: 'calculate', items: [{operator:"+"}, $1, $3]}}
+    // ;

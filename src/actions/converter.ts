@@ -1,4 +1,5 @@
 import jsonFile from 'jsonfile'
+
 jsonFile.readFile('./src/actions/actions.json', (err, obj) => {
   if (err !== null) {
     console.error(err)
