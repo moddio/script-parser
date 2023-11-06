@@ -86,10 +86,10 @@ e
     | NUMBER
         {$$ = Number(yytext);}
     | NAME '('')'
-        {$$ = new Function(func[$NAME]?...funcs[$NAME].split('#')).apply(undefined, undefined): throwError($NAME + " is undefined");}
+        {if(funcs[$NAME]) $$ = new Function(...funcs[$NAME].split('#')).apply(undefined, undefined); else throwError($NAME + " is undefined")}
     | NAME '(' '"' expression_list '"' ')'
     | NAME '(' expression_list ')'
-        {$$ = new Function(func[$NAME]?...funcs[$NAME].split('#')).apply(undefined, $expression_list): throwError($NAME + " is undefined");}
+        {if(funcs[$NAME]) $$ = new Function(...funcs[$NAME].split('#')).apply(undefined, $expression_list); else throwError($NAME + " is undefined")}
     | STRING
         {$$ = yytext.slice(1, yytext.length-1)}
      | e'.' NAME
@@ -97,7 +97,7 @@ e
     | e '[' "'" NAME "'" ']'
     | e '[' '"' NAME '"' ']'
         {$$ = attr[$NAME].apply(undefined,
-[$1]); }
+[$1]); };
     // | STRING '+' STRING
     //    { $$ =  {
     //                 "function": "concat",
