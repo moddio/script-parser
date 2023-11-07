@@ -93,8 +93,14 @@ e
     | STRING
         {$$ = yytext.slice(1, yytext.length-1)}
      | e'.' NAME
+     {$$ = attr[$NAME].apply(undefined,
+[$1]); };
     | e '[' NAME ']'
+    {$$ = attr[$NAME].apply(undefined,
+[$1]); };
     | e '[' "'" NAME "'" ']'
+    {$$ = attr[$NAME].apply(undefined,
+[$1]); };
     | e '[' '"' NAME '"' ']'
         {$$ = attr[$NAME].apply(undefined,
 [$1]); };
