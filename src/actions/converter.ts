@@ -1,5 +1,6 @@
 import jsonFile from 'jsonfile'
 import axios from 'axios'
+import { aliasTable } from './aliasTable'
 
 axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
   .then((res) => {
@@ -9,8 +10,12 @@ axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
     const obj = res.data.message
     Object.values(obj).map((v: any, idx) => {
       const value = v
+      let key = value.key
+      if (aliasTable[value.key as keyof typeof aliasTable] !== undefined) {
+        key = aliasTable[value.key as keyof typeof aliasTable]
+      }
       const actionObj: any = {
-        function: value.key
+        function: key
       }
       let length = 0
       value.data?.fragments.map((frag: { type: string, field: string | undefined }, index: any) => {
@@ -25,12 +30,13 @@ axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
       }
       str += `{return ${JSON.stringify(actionObj)}}`
       let count = 0
-      actionsObj[value.key] = str.replace(/"/g, function (match) {
+      actionsObj[key] = str.replace(/"/g, function (match) {
         count++
         return (count > 4) ? '' : match
       })
-      actionsMapTemplate[value.key] = value.key
-      keywordsArr.push(value.key)
+      actionsMapTemplate[key] = key
+
+      keywordsArr.push(key)
     })
     jsonFile.writeFileSync('./src/actions/keywords.json', keywordsArr)
     jsonFile.writeFileSync('./src/actions/keywordsMapTemplate.json', actionsMapTemplate)
