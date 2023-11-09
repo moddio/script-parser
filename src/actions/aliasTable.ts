@@ -1,5 +1,5 @@
 export const aliasTable = {
-  getRandomNumberBetween: 'randNUmber',
+  getRandomNumberBetween: 'randNumber',
   xyCoordinate: 'vec2',
   dynamicRegion: 'vec4',
   mathFloor: 'floor',

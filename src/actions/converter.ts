@@ -15,7 +15,7 @@ axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
         key = aliasTable[value.key as keyof typeof aliasTable]
       }
       const actionObj: any = {
-        function: key
+        function: value.key
       }
       let length = 0
       value.data?.fragments.map((frag: { type: string, field: string | undefined }, index: any) => {
