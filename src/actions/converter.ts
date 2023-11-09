@@ -4,6 +4,7 @@ import axios from 'axios'
 axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
   .then((res) => {
     const actionsObj: any = {}
+    const actionsMapTemplate: any = {}
     const keywordsArr: string[] = []
     const obj = res.data.message
     Object.values(obj).map((v: any, idx) => {
@@ -28,9 +29,11 @@ axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
         count++
         return (count > 4) ? '' : match
       })
+      actionsMapTemplate[value.key] = value.key
       keywordsArr.push(value.key)
     })
     jsonFile.writeFileSync('./src/actions/keywords.json', keywordsArr)
+    jsonFile.writeFileSync('./src/actions/keywordsMapTemplate.json', actionsMapTemplate)
     jsonFile.writeFileSync('./src/actions/converted_actions.json', actionsObj)
   }).catch((e) => {
     console.log(e)
