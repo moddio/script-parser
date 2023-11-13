@@ -17,6 +17,7 @@ export const attributeTable: Record<string, {
     attr: []
   },
   unit: {
-    method: ['unitsFacingAngle']
+    method: ['unitsFacingAngle'],
+    attr: []
   }
 }

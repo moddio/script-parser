@@ -6,9 +6,9 @@ export const aliasTable = {
   squareRoot: 'sqrt',
   getRandomItemTypeFromItemTypeGroup: 'randItemType',
   stringToNumber: 'str2num',
-  getPositionY: 'getY', // prefer to use attribute here, like pos.y, but still retain this function
+  getPositionY: 'posY', // prefer to use attribute here, like pos.y, but still retain this function
   undefinedValue: 'undefined',
-  getPositionX: 'getX',
+  getPositionX: 'posX',
   getRandomPositionInRegion: 'randPos',
   substringOf: 'slice',
   absoluteValueOfNumber: 'abs',
@@ -16,5 +16,18 @@ export const aliasTable = {
   getExponent: 'pow',
   numberToString: 'num2str',
   stringToObject: 'str2obj',
-  objectToString: 'obj2Str'
+  objectToString: 'obj2Str',
+  unitsFacingAngle: 'facingAngle',
+  getCurrentAmmoOfItem: 'currentAmmo',
+  changeDescriptionOfItem: 'changeDesc',
+  getItemTypeOfItem: 'itemType',
+  getOwnerOfItem: 'owner',
+  getUnitTypeOfUnit: 'unitType',
+  setFadingTextOfUnit: 'setFadingText',
+  getSensorOfUnit: 'sensor',
+  getPositionInFrontOfPosition: 'polarProjection',
+  getXCoordinateOfRegion: 'regionX',
+  getYCoordinateOfRegion: 'regionY',
+  playerTypeOfPlayer: 'playerType',
+  lastPlayedTimeOfPlayer: 'lastPlayedTime'
 }
