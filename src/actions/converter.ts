@@ -2,6 +2,14 @@ import jsonFile from 'jsonfile'
 import axios from 'axios'
 import { aliasTable } from './aliasTable'
 
+const checkMultiDefined = (val: string) => {
+
+  Object.keys(aliasTable).forEach((key) => {
+
+  })
+  return
+}
+
 axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
   .then((res) => {
     const actionsObj: any = {}

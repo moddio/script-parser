@@ -1,18 +1,25 @@
 export const aliasTable = {
   getRandomNumberBetween: 'randNumber',
-  xyCoordinate: 'vec2',
-  dynamicRegion: 'vec4',
+  xyCoordinate: 'pos',
+  dynamicRegion: 'region',
   mathFloor: 'floor',
   squareRoot: 'sqrt',
   getRandomItemTypeFromItemTypeGroup: 'randItemType',
   stringToNumber: 'str2num',
-  getPositionY: 'posY', // prefer to use attribute here, like pos.y, but still retain this function
+  getPositionY: 'y', // 'posY' no need to define them specifically
+  getPositionX: 'x', // 'posX',
+  getXCoordinateOfRegion: 'x', // 'regionX',
+  getYCoordinateOfRegion: 'y', // 'regionY',
+
+  getItemTypeOfItem: 'type', // 'itemType',
+  getUnitTypeOfUnit: 'type', // 'unitType',
+  playerTypeOfPlayer: 'type', // 'playerType',
+  getRandomUnitTypeFromUnitTypeGroup: 'type', // 'randUnitType',
+
   undefinedValue: 'undefined',
-  getPositionX: 'posX',
   getRandomPositionInRegion: 'randPos',
   substringOf: 'slice',
   absoluteValueOfNumber: 'abs',
-  getRandomUnitTypeFromUnitTypeGroup: 'randUnitType',
   getExponent: 'pow',
   numberToString: 'num2str',
   stringToObject: 'str2obj',
@@ -20,14 +27,9 @@ export const aliasTable = {
   unitsFacingAngle: 'facingAngle',
   getCurrentAmmoOfItem: 'currentAmmo',
   changeDescriptionOfItem: 'changeDesc',
-  getItemTypeOfItem: 'itemType',
   getOwnerOfItem: 'owner',
-  getUnitTypeOfUnit: 'unitType',
   setFadingTextOfUnit: 'setFadingText',
   getSensorOfUnit: 'sensor',
   getPositionInFrontOfPosition: 'polarProjection',
-  getXCoordinateOfRegion: 'regionX',
-  getYCoordinateOfRegion: 'regionY',
-  playerTypeOfPlayer: 'playerType',
   lastPlayedTimeOfPlayer: 'lastPlayedTime'
 }
