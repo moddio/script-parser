@@ -65,7 +65,7 @@ expression_list
 
 e
     : e '+' e
-        { $$ = { function: 'calculate', items: [{operator:"+"},$1, $3]}}
+        { $$ = (typeof $1 === 'string' || (typeof $1 === 'object' && $1._returnType === 'string')) || (typeof $3 === 'string' || (typeof $3 === 'object' && $3._returnType === 'string')) ?{"function": "concat",_returnType:"string","textA": $1,"textB": $3}: {function: 'calculate', items: [{operator:"+"},$1, $3]}}
     | e '-' e
         { $$ = { function: 'calculate', items: [{operator:"-"},$1, $3]}}
     | e '*' e
