@@ -1,13 +1,21 @@
 import jsonFile from 'jsonfile'
 import axios from 'axios'
 import { aliasTable } from './aliasTable'
+import { multiDefinedTable } from './multiDefined'
 
-const checkMultiDefined = (val: string) => {
-
-  Object.keys(aliasTable).forEach((key) => {
-
+const getVars = (value: any, actionObj: any) => {
+  let length = 0
+  value.data?.fragments.map((frag: { type: string, field: string | undefined }, index: any) => {
+    if (frag.type === 'variable' && (frag.field !== undefined)) {
+      actionObj[frag.field] = String.fromCharCode(length + 97)
+      length += 1
+    }
   })
-  return
+  let str = ''
+  for (let i = 0; i < length; i++) {
+    str += String.fromCharCode(i + 97) + '#'
+  }
+  return str
 }
 
 axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
@@ -18,33 +26,47 @@ axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
     const obj = res.data.message
     Object.values(obj).map((v: any, idx) => {
       const value = v
-      let key = value.key
+      let key: string = value.key
       if (aliasTable[value.key as keyof typeof aliasTable] !== undefined) {
         key = aliasTable[value.key as keyof typeof aliasTable]
       }
       const actionObj: any = {
-        function: value.key
+        function: value.key,
+        _returnType: `'${value.data.category}'`
       }
-      let length = 0
-      value.data?.fragments.map((frag: { type: string, field: string | undefined }, index: any) => {
-        if (frag.type === 'variable' && (frag.field !== undefined)) {
-          actionObj[frag.field] = String.fromCharCode(length + 97)
-          length += 1
-        }
-      })
-      let str = ''
-      for (let i = 0; i < length; i++) {
-        str += String.fromCharCode(i + 97) + '#'
-      }
+      let str = getVars(value, actionObj)
       str += `{return ${JSON.stringify(actionObj)}}`
       let count = 0
-      actionsObj[key] = str.replace(/"/g, function (match) {
-        count++
-        return (count > 4) ? '' : match
-      })
+      if (multiDefinedTable[key] === undefined) {
+        actionsObj[key] = str.replace(/"/g, function (match) {
+          count++
+          return (count > 4) ? '' : match
+        })
+      }
       actionsMapTemplate[key] = key
 
       keywordsArr.push(key)
+    })
+    Object.entries(multiDefinedTable).map(([key, value]) => {
+      const values = Object.entries(value)
+      let str = `${getVars(obj.find((o: any) => o.key === values[0][1]), {})}{return `
+      values.map(([k, v], idx) => {
+        const actionObj: any = {
+          function: v
+        }
+
+        try {
+          getVars(obj.find((o: any) => o.key === v), actionObj)
+        } catch (e) {
+          console.log(k, obj.key, e)
+        }
+        let count = 0
+        str += `a._returnType === '${k}' || a._returnType === 'entity'? ${JSON.stringify(actionObj)} : ${idx === values.length - 1 ? "{'error': a}}" : ''}`.replace(/"/g, function (match) {
+          count++
+          return (count > 4) ? '' : match
+        })
+      })
+      actionsObj[key] = str
     })
     jsonFile.writeFileSync('./src/actions/keywords.json', keywordsArr)
     jsonFile.writeFileSync('./src/actions/keywordsMapTemplate.json', actionsMapTemplate)

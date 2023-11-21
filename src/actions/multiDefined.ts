@@ -1,10 +1,16 @@
-export const multiDefinedTable = {
+export const multiDefinedTable: Record<string, Record<string, string>> = {
   x: {
-    xyCoordinate: 'getPositionX',
-    dynamicRegion: 'getXCoordinateOfRegion'
+    position: 'getPositionX',
+    region: 'getXCoordinateOfRegion'
   },
   y: {
-    xyCoordinate: 'getPositionY',
-    dynamicRegion: 'getYCoordinateOfRegion'
+    position: 'getPositionY',
+    region: 'getYCoordinateOfRegion'
+  },
+  type: {
+    item: 'getItemTypeOfItem',
+    unit: 'getUnitTypeOfUnit',
+    player: 'playerTypeOfPlayer',
+    unitTypeGroup: 'getRandomUnitTypeFromUnitTypeGroup'
   }
 }
