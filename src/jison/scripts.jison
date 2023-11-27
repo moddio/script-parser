@@ -34,7 +34,6 @@
 '"'                   return '"'
 "."                   return '.'
 <<EOF>>               return 'EOF'
-.                     return 'INVALID'
 
 /lex
 
@@ -78,15 +77,41 @@ e
         { $$ = $2; }
     | NUMBER
         {$$ = Number(yytext);}
-    | NAME '('')'
-        {if(funcs[$NAME]) $$ = new Function(...funcs[$NAME].split('#')).apply(undefined, undefined); else throwError($NAME + " is undefined")}
+    | NAME{
+      if(funcs[$NAME]) {
+        if (funcs[$NAME].split('#').length === 1) {
+          $$ = new Function(...funcs[$NAME].split('#')).apply(undefined, undefined);
+        }
+        else throwError($NAME + " need parameters")
+      }
+      else throwError($NAME + " is undefined")}
+    | NAME '('')'{
+      if(funcs[$NAME]) {
+        if (funcs[$NAME].split('#').length === 1) {
+          $$ = new Function(...funcs[$NAME].split('#')).apply(undefined, undefined);
+        }
+        else throwError($NAME + " need parameters")
+      }
+      else throwError($NAME + " is undefined")}
     | NAME '(' '"' expression_list '"' ')'
     | NAME '(' expression_list ')'
         {if(funcs[$NAME]) $$ = new Function(...funcs[$NAME].split('#')).apply(undefined, $expression_list); else throwError($NAME + " is undefined")}
     | STRING
         {$$ = yytext.slice(1, yytext.length-1)}
     | e'.' NAME
-     {if(funcs[$NAME]) $$ = new Function(...funcs[$NAME].split('#')).apply(undefined, [$1]); else throwError($NAME + " is undefined")}
+     {if(funcs[$NAME]) $$ = new Function(...funcs[$NAME].split('#')).apply(undefined, [$1]); else {
+     if($1._returnType === "entity") {
+      $$ = {
+        function: "getValueOfEntityVariable",
+        variable: {
+          function: "getEntityVariable",
+        },
+        entity: $1
+      }
+     } else {
+       throwError($NAME + " is undefined")}
+     }
+    }
     | e'.' NAME'(' expression_list ')'
      {if(funcs[$NAME]) $$ = new Function(...funcs[$NAME].split('#')).apply(undefined, [$1, ...$expression_list]); else throwError($NAME + " is undefined")};
      
