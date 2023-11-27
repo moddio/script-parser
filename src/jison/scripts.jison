@@ -77,22 +77,26 @@ e
         { $$ = $2; }
     | NUMBER
         {$$ = Number(yytext);}
-    | NAME{
+    | NAME
+    {
       if(funcs[$NAME]) {
         if (funcs[$NAME].split('#').length === 1) {
           $$ = new Function(...funcs[$NAME].split('#')).apply(undefined, undefined);
         }
         else throwError($NAME + " need parameters")
       }
-      else throwError($NAME + " is undefined")}
-    | NAME '('')'{
+      else throwError($NAME + " is undefined")
+    }
+    | NAME '('')'
+    {
       if(funcs[$NAME]) {
         if (funcs[$NAME].split('#').length === 1) {
           $$ = new Function(...funcs[$NAME].split('#')).apply(undefined, undefined);
         }
         else throwError($NAME + " need parameters")
       }
-      else throwError($NAME + " is undefined")}
+      else throwError($NAME + " is undefined")
+    }
     | NAME '(' '"' expression_list '"' ')'
     | NAME '(' expression_list ')'
         {if(funcs[$NAME]) $$ = new Function(...funcs[$NAME].split('#')).apply(undefined, $expression_list); else throwError($NAME + " is undefined")}
@@ -105,6 +109,9 @@ e
         function: "getValueOfEntityVariable",
         variable: {
           function: "getEntityVariable",
+          variable: {
+            text: $NAME,
+          }
         },
         entity: $1
       }
