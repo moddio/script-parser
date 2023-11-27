@@ -111,6 +111,7 @@ e
           function: "getEntityVariable",
           variable: {
             text: $NAME,
+            key: $NAME,
           }
         },
         entity: $1
