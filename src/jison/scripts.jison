@@ -21,7 +21,7 @@
 ["][^"]*["]|['][^']*[']           return 'STRING'
 [0-9]+("."[0-9]+)?\b  return 'NUMBER'
 [a-zA-Z0-9]+          return 'NAME'
-([><])=?|==           return 'COMPARE'
+((">="|"<=")|"=="|">"|"<")           return 'COMPARE'
 ","                   return ','
 "*"                   return '*'
 "/"                   return '/'
