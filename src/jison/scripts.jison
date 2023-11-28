@@ -21,12 +21,14 @@
 ["][^"]*["]|['][^']*[']           return 'STRING'
 [0-9]+("."[0-9]+)?\b  return 'NUMBER'
 [a-zA-Z0-9]+          return 'NAME'
+([><])=?|==           return 'COMPARE'
 ","                   return ','
 "*"                   return '*'
 "/"                   return '/'
 "-"                   return '-'
 "+"                   return '+'
 "^"                   return '^'
+"%"                   return '%'
 "("                   return '('
 ")"                   return ')'
 "["                   return '['
@@ -65,17 +67,86 @@ expression_list
 
 e
     : e '+' e
-        { $$ = (typeof $1 === 'string' || (typeof $1 === 'object' && $1._returnType === 'string')) || (typeof $3 === 'string' || (typeof $3 === 'object' && $3._returnType === 'string')) ?{"function": "concat",_returnType:"string","textA": $1,"textB": $3}: {function: 'calculate', items: [{operator:"+"},$1, $3]}}
+        { $$ = (typeof $1 === 'string' || (typeof $1 === 'object' && $1._returnType === 'string')) || (typeof $3 === 'string' || (typeof $3 === 'object' && $3._returnType === 'string')) ?{"function": "concat",_returnType:"string","textA": $1,"textB": $3}: {function: 'calculate', _returnType:'number', items: [{operator:"+"},$1, $3]}}    
+    | e '^' e 
+        { $$ =  {
+          function: "getExponent",
+          base: $1,
+          power: $3,
+          _returnType: "number",
+    }}
+    | e '%' e
+        { $$ = { function: 'calculate', _returnType:'number', items: [{operator:"%"},$1, $3]}}
     | e '-' e
-        { $$ = { function: 'calculate', items: [{operator:"-"},$1, $3]}}
+        { $$ = { function: 'calculate', _returnType:'number', items: [{operator:"-"},$1, $3]}}
     | e '*' e
-        { $$ = { function: 'calculate', items: [{operator:"*"},$1, $3]}}
+        { $$ = { function: 'calculate', _returnType:'number', items: [{operator:"*"},$1, $3]}}
     | e '/' e
-        { $$ = { function: 'calculate', items: [{operator:"/"},$1, $3]}}
+        { $$ = { function: 'calculate', _returnType:'number', items: [{operator:"/"},$1, $3]}}
     | '-' e %prec UMINUS
-        { $$ = { function: 'calculate', items: [{operator:"*"},$2, -1]} }
+        { $$ = { function: 'calculate', _returnType:'number', items: [{operator:"*"},$2, -1]} }
     | '(' e ')'
         { $$ = $2; }
+    | e COMPARE e 
+        { $$ = {
+               type: "condition",
+               conditions: [
+                    {
+                         "operandType": typeof $1 === 'object'?$1._returnType : typeof $1,
+                         "operator": $COMPARE
+                    },
+                    $1,
+                    $3
+               ],
+               "then": [],
+               "else": []
+          }
+    }
+    | e '&&' e {
+          $$ = 
+               {type: "condition",
+               conditions: [
+                    {
+                         "operandType": "and",
+                         "operator": "AND"
+                    },
+                    $1,
+                    $3
+               ],
+               "then": [],
+               "else": []
+               }
+          }
+    
+    | e '||' e {
+$$ = {
+               "type": "condition",
+               "conditions": [
+                    {
+                         "operandType": "or",
+                         "operator": "OR"
+                    },
+                    [
+                         {
+                              "operandType": "boolean",
+                              "operator": "=="
+                         },
+                         true,
+                         true
+                    ],
+                    [
+                         {
+                              "operandType": "boolean",
+                              "operator": "=="
+                         },
+                         true,
+                         true
+                    ]
+               ],
+               "then": [],
+               "else": []
+          }
+    }
     | NUMBER
         {$$ = Number(yytext);}
     | NAME
