@@ -6,7 +6,7 @@ interface actionTostringProps {
   o: any
   parentKey: string
   defaultReturnType: string
-  gameState: { unitTypes: AnyObj }
+  gameData: { unitTypes: AnyObj }
 }
 
 const inValidKey = [
@@ -33,14 +33,14 @@ export const removeUnusedProperties = (obj: AnyObj): AnyObj => {
 }
 
 const excludeFuncs = {
-  concat: ({ o: obj, defaultReturnType, gameState, parentKey }: actionTostringProps) => `${actionToString({ o: obj.textA, defaultReturnType, gameState, parentKey })} + ${actionToString({ o: obj.textB, parentKey, defaultReturnType, gameState })}`,
-  getValueOfEntityVariable: ({ o: obj, defaultReturnType, gameState, parentKey }: actionTostringProps) => `${typeof obj.entity === 'object' ? actionToString({ o: obj.entity, parentKey, defaultReturnType, gameState }) : obj.entity}.${obj.variable.variable.key} `,
-  getValueOfPlayerVariable: ({ o: obj, defaultReturnType, gameState, parentKey }: actionTostringProps) => `${typeof obj.player === 'object' ? actionToString({ o: obj.player, parentKey, defaultReturnType, gameState }) : obj.player}.${obj.variable.variable.key} `,
+  concat: ({ o: obj, defaultReturnType, gameData, parentKey }: actionTostringProps) => `${actionToString({ o: obj.textA, defaultReturnType, gameData, parentKey })} + ${actionToString({ o: obj.textB, parentKey, defaultReturnType, gameData })}`,
+  getValueOfEntityVariable: ({ o: obj, defaultReturnType, gameData, parentKey }: actionTostringProps) => `${typeof obj.entity === 'object' ? actionToString({ o: obj.entity, parentKey, defaultReturnType, gameData }) : obj.entity}.${obj.variable.variable.key} `,
+  getValueOfPlayerVariable: ({ o: obj, defaultReturnType, gameData, parentKey }: actionTostringProps) => `${typeof obj.player === 'object' ? actionToString({ o: obj.player, parentKey, defaultReturnType, gameData }) : obj.player}.${obj.variable.variable.key} `,
   getEntityVariable: ({ o: obj }: actionTostringProps) => obj.variable.text,
   getPlayerVariable: ({ o: obj }: actionTostringProps) => obj.variable.text
 }
 
-export const actionToString = ({ o, parentKey, defaultReturnType, gameState }: actionTostringProps): string => {
+export const actionToString = ({ o, parentKey, defaultReturnType, gameData: gameState }: actionTostringProps): string => {
   let output = ''
   if (o === null || o === undefined) {
     return output
@@ -71,10 +71,21 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameState }: a
   }
   const obj = removeUnusedProperties(o)
   const keys = Object.keys(obj)
+
+  // for comparison ,1 == 2
+  if (obj.type === 'condition') {
+    const operator = obj.conditions.operator
+    const left = typeof obj.items[1] === 'object' ? actionToString({ o: obj.items[1], parentKey: operator, defaultReturnType, gameData: gameState }) : obj.conditions[1]
+    const right = typeof obj.items[2] === 'object' ? actionToString({ o: obj.items[2], parentKey: operator, defaultReturnType, gameData: gameState }) : obj.conditions[2]
+    output += `${left} ${operator} ${right}`
+    return output
+  }
+
+  // for calc, e.g 1 + 1, 1 ^ 2
   if (obj.items !== undefined) {
     const operator = obj.items[0].operator ?? obj.items[0]
-    const left = typeof obj.items[1] === 'object' ? actionToString({ o: obj.items[1], parentKey: operator, defaultReturnType, gameState }) : obj.items[1]
-    const right = typeof obj.items[2] === 'object' ? actionToString({ o: obj.items[2], parentKey: operator, defaultReturnType, gameState }) : obj.items[2]
+    const left = typeof obj.items[1] === 'object' ? actionToString({ o: obj.items[1], parentKey: operator, defaultReturnType, gameData: gameState }) : obj.items[1]
+    const right = typeof obj.items[2] === 'object' ? actionToString({ o: obj.items[2], parentKey: operator, defaultReturnType, gameData: gameState }) : obj.items[2]
     if ((obj.items[0].operator === '*' || obj.items[0] === '*') && right === -1) {
       output += `- ${left} `
     } else {
@@ -83,16 +94,18 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameState }: a
     }
     return output
   }
+
+  // for normal action like pos(2, 2)
   if (obj.function !== undefined) {
     const convertFunc = excludeFuncs[obj.function as keyof typeof excludeFuncs]
     if (convertFunc !== undefined) {
-      output += convertFunc({ o: obj, parentKey, defaultReturnType, gameState })
+      output += convertFunc({ o: obj, parentKey, defaultReturnType, gameData: gameState })
     } else {
       output += `${aliasTable[obj.function as keyof typeof aliasTable] ?? obj.function}(`
       for (let i = 0; i < keys.length; i++) {
         if (checkIsValid(keys[i])) {
           output += typeof obj[keys[i]] === 'object'
-            ? actionToString({ o: obj[keys[i]], parentKey: keys[i], defaultReturnType, gameState })
+            ? actionToString({ o: obj[keys[i]], parentKey: keys[i], defaultReturnType, gameData: gameState })
             : typeof obj[keys[i]] === 'string' ? `"${obj[keys[i]]}"` : obj[keys[i]]
         }
         if (keys[i] !== 'function' || i === keys.length - 1) {

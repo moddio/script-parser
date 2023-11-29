@@ -2,10 +2,11 @@ import jsonFile from 'jsonfile'
 import axios from 'axios'
 import { aliasTable } from './aliasTable'
 import { multiDefinedTable } from './multiDefined'
+import { type AnyObj } from '../types'
 
-const getVars = (value: any, actionObj: any) => {
+const getVars = (value: any, actionObj: any): string => {
   let length = 0
-  value.data?.fragments.map((frag: { type: string, field: string | undefined }, index: any) => {
+  value.data?.fragments.forEach((frag: { type: string, field: string | undefined }, index: any) => {
     if (frag.type === 'variable' && (frag.field !== undefined)) {
       actionObj[frag.field] = String.fromCharCode(length + 97)
       length += 1
@@ -18,13 +19,17 @@ const getVars = (value: any, actionObj: any) => {
   return str
 }
 
+const postProcess = (actionObjs: AnyObj): void => {
+  actionObjs.concat = "a#b#{return {\"function\":\"concat\",_returnType:'string',textA:removeHtmlTag(a),textB:removeHtmlTag(b)}}"
+}
+
 axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
   .then((res) => {
     const actionsObj: any = {}
     const actionsMapTemplate: any = {}
     const keywordsArr: string[] = []
     const obj = res.data.message
-    Object.values(obj).map((v: any, idx) => {
+    Object.values(obj).forEach((v: any, idx) => {
       const value = v
       let key: string = value.key
       if (aliasTable[value.key as keyof typeof aliasTable] !== undefined) {
@@ -47,10 +52,10 @@ axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
 
       keywordsArr.push(key)
     })
-    Object.entries(multiDefinedTable).map(([key, value]) => {
+    Object.entries(multiDefinedTable).forEach(([key, value]) => {
       const values = Object.entries(value)
       let str = `${getVars(obj.find((o: any) => o.key === values[0][1]), {})}{return `
-      values.map(([k, v], idx) => {
+      values.forEach(([k, v], idx) => {
         const actionObj: any = {
           function: v
         }
@@ -68,6 +73,7 @@ axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
       })
       actionsObj[key] = str
     })
+    postProcess(actionsObj)
     jsonFile.writeFileSync('./src/actions/keywords.json', keywordsArr)
     jsonFile.writeFileSync('./src/actions/keywordsMapTemplate.json', actionsMapTemplate)
     jsonFile.writeFileSync('./src/actions/converted_actions.json', actionsObj)
