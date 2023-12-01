@@ -20,7 +20,7 @@ const getVars = (value: any, actionObj: any): string => {
 }
 
 const postProcess = (actionObjs: AnyObj): void => {
-  actionObjs.concat = "a#b#{return {\"function\":\"concat\",_returnType:'string',textA:removeHtmlTag(a),textB:removeHtmlTag(b)}}"
+  actionObjs.concat = "a#b#{return {\"function\":\"concat\",_returnType:'string',textA:a,textB:b}}"
 }
 
 axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
