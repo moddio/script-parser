@@ -74,9 +74,9 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData }: ac
 
   // for comparison ,1 == 2
   if (obj.type === 'condition') {
-    const operator = obj.conditions.operator
-    const left = typeof obj.items[1] === 'object' ? actionToString({ o: obj.items[1], parentKey: operator, defaultReturnType, gameData }) : obj.conditions[1]
-    const right = typeof obj.items[2] === 'object' ? actionToString({ o: obj.items[2], parentKey: operator, defaultReturnType, gameData }) : obj.conditions[2]
+    const operator = obj.conditions[0].operator
+    const left = typeof obj.conditions[1] === 'object' ? actionToString({ o: obj.conditions[1], parentKey: operator, defaultReturnType, gameData }) : obj.conditions[1]
+    const right = typeof obj.conditions[2] === 'object' ? actionToString({ o: obj.conditions[2], parentKey: operator, defaultReturnType, gameData }) : obj.conditions[2]
     output += `${left} ${operator} ${right}`
     return output
   }

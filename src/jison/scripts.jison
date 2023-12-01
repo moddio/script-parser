@@ -49,6 +49,8 @@
 %left '+' '-'
 %left '*' '/'
 %left '^'
+%left AND OR
+%left COMPARE
 %left UMINUS
 
 %% /* language grammar */
