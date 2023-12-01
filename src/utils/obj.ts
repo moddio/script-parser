@@ -1,4 +1,5 @@
 import { aliasTable } from '../actions/aliasTable'
+import { noBracketsFuncs } from '../actions/noBracketsFuncs'
 import { type AnyObj } from '../types'
 
 interface actionTostringProps {
@@ -97,11 +98,16 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData }: ac
 
   // for normal action like pos(2, 2)
   if (obj.function !== undefined) {
+    let needBrackets = true
+
+    if (noBracketsFuncs.includes(obj.function)) {
+      needBrackets = false
+    }
     const convertFunc = excludeFuncs[obj.function as keyof typeof excludeFuncs]
     if (convertFunc !== undefined) {
       output += convertFunc({ o: obj, parentKey, defaultReturnType, gameData })
     } else {
-      output += `${aliasTable[obj.function as keyof typeof aliasTable] ?? obj.function}(`
+      output += `${aliasTable[obj.function as keyof typeof aliasTable] ?? obj.function}${needBrackets ? '(' : ''}`
       for (let i = 0; i < keys.length; i++) {
         if (checkIsValid(keys[i])) {
           output += typeof obj[keys[i]] === 'object'
@@ -109,7 +115,7 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData }: ac
             : typeof obj[keys[i]] === 'string' ? `"${obj[keys[i]]}"` : obj[keys[i]]
         }
         if (keys[i] !== 'function' || i === keys.length - 1) {
-          output += keys.length - 1 === i ? ')' : ', '
+          output += keys.length - 1 === i ? needBrackets ? ')' : '' : ', '
         }
       }
     }

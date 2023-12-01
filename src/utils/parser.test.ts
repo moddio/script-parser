@@ -32,4 +32,28 @@ describe('parser', () => {
       type: 'condition'
     })
   })
+
+  test('pos( 2+2, 2+2)', () => { expect(parser.parse('pos(2+2, 2+2)')).toMatchObject({ _returnType: 'position', function: 'xyCoordinate', x: { _returnType: 'number', function: 'calculate', items: [{ operator: '+' }, 2, 2] }, y: { _returnType: 'number', function: 'calculate', items: [{ operator: '+' }, 2, 2] } }) })
+  test('thisEntity.testVar4', () => {
+    expect(actionToString({
+      o: {
+        function: 'getValueOfEntityVariable',
+        variable: {
+          function: 'getEntityVariable',
+          variable: {
+            text: 'testVar4',
+            key: 'testVar4',
+            dataType: 'unitType',
+            entity: 'E1KEji34'
+          }
+        },
+        entity: {
+          function: 'thisEntity'
+        }
+      },
+      defaultReturnType: '',
+      gameData: { unitTypes: {} },
+      parentKey: ''
+    })).toBe('thisEntity.testVar4')
+  })
 })
