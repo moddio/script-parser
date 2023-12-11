@@ -112,7 +112,7 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData }: ac
         if (checkIsValid(keys[i])) {
           output += typeof obj[keys[i]] === 'object'
             ? actionToString({ o: obj[keys[i]], parentKey: keys[i], defaultReturnType, gameData })
-            : typeof obj[keys[i]] === 'string' ? `"${obj[keys[i]]}"` : obj[keys[i]]
+            : typeof obj[keys[i]] === 'string' ? `'${obj[keys[i]]}'` : obj[keys[i]]
         }
         if (keys[i] !== 'function' || i === keys.length - 1) {
           output += keys.length - 1 === i ? needBrackets ? ')' : '' : ', '
