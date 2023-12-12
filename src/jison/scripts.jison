@@ -134,7 +134,7 @@ e
           $$ = 
           {
             type: "condition",
-            _returnType: "conditions"
+            _returnType: "conditions",
             conditions: [
             {
               "operandType": "and",
@@ -152,7 +152,7 @@ e
           $$ = 
           {
             type: "condition",
-            _returnType: "conditions"
+            _returnType: "conditions",
             conditions: [
             {
               "operandType": "and",
@@ -165,7 +165,6 @@ e
             "else": []
             }
           }
-    }
     | NUMBER
         {$$ = Number(yytext);}
     | NAME
