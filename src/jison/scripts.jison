@@ -130,49 +130,40 @@ e
                "else": []
           }
     }
-    | condition_list AND condition_list{
+    | e AND e {
           $$ = 
-               {type: "condition",
-               conditions: [
-                    {
-                         "operandType": "and",
-                         "operator": "AND"
-                    },
-                    $1.conditions ?? $1,
-                    $3.conditions ?? $3
-               ],
-               "then": [],
-               "else": []
-               }
+          {
+            type: "condition",
+            _returnType: "conditions"
+            conditions: [
+            {
+              "operandType": "and",
+              "operator": "AND"
+            },
+            $1.conditions ?? $1,
+            $3.conditions ?? $3
+            ],
+            "then": [],
+            "else": []
+            }
           }
     
-    | condition_list OR condition_list{
-$$ = {
-               "type": "condition",
-               "conditions": [
-                    {
-                         "operandType": "or",
-                         "operator": "OR"
-                    },
-                    [
-                         {
-                              "operandType": "boolean",
-                              "operator": "=="
-                         },
-                         true,
-                         true
-                    ],
-                    [
-                         {
-                              "operandType": "boolean",
-                              "operator": "=="
-                         },
-                         true,
-                         true
-                    ]
-               ],
-               "then": [],
-               "else": []
+    | e OR e {
+          $$ = 
+          {
+            type: "condition",
+            _returnType: "conditions"
+            conditions: [
+            {
+              "operandType": "and",
+              "operator": "AND"
+            },
+            $1.conditions ?? $1,
+            $3.conditions ?? $3
+            ],
+            "then": [],
+            "else": []
+            }
           }
     }
     | NUMBER
