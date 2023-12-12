@@ -155,8 +155,8 @@ e
             _returnType: "conditions",
             conditions: [
             {
-              "operandType": "and",
-              "operator": "AND"
+              "operandType": "or",
+              "operator": "OR"
             },
             $1.conditions ?? $1,
             $3.conditions ?? $3
