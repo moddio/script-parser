@@ -14,7 +14,7 @@
   function removeHtmlTag(s: string) {
     return typeof s=== 'string' ? s.replaceAll(/<\/?.+?>/g, "") : s
   }
-  function convertCalcToConcat(o: object) {   
+  function convertCalcToConcat(o: any): any {   
   return o.items && o.items[1] && o._brackets === undefined? {
     "function": "concat",
     "_returnType": "string",
