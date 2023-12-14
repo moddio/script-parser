@@ -14,6 +14,14 @@
   function removeHtmlTag(s: string) {
     return typeof s=== 'string' ? s.replaceAll(/<\/?.+?>/g, "") : s
   }
+  function convertCalcToConcat(o: object) {   
+  return o.items && o.items[1] && o._brackets === undefined? {
+    "function": "concat",
+    "_returnType": "string",
+    "textA": typeof o.items[1] === 'object'?convertCalcToConcat(o.items[1]): o.items[1],
+    "textB":typeof o.items[2] === 'object'?convertCalcToConcat(o.items[2]): o.items[2],
+    }: o
+  }
 %}
 
 /* lexical grammar */
@@ -94,7 +102,7 @@ expression_list
 
 e
     : e '+' e
-        { $$ = (typeof $1 === 'string' || (typeof $1 === 'object' && $1._returnType === 'string')) || (typeof $3 === 'string' || (typeof $3 === 'object' && $3._returnType === 'string')) ?{"function": "concat",_returnType:"string","textA": $1,"textB": $3}: {function: 'calculate', _returnType:'number', items: [{operator:"+"},$1, $3]}}    
+        { $$ = (typeof $1 === 'string' || (typeof $1 === 'object' && $1._returnType === 'string')) || (typeof $3 === 'string' || (typeof $3 === 'object' && $3._returnType === 'string')) ?{"function": "concat",_returnType:"string","textA": convertCalcToConcat($1),"textB": convertCalcToConcat($3)}: {function: 'calculate', _returnType:'number', items: [{operator:"+"},$1, $3]}}    
     | e '^' e 
         { $$ =  {
           function: "getExponent",
@@ -113,7 +121,7 @@ e
     | '-' e %prec UMINUS
         { $$ = { function: 'calculate', _returnType:'number', items: [{operator:"*"},$2, -1]} }
     | '(' e ')'
-        { $$ = $2; }
+        { $$ = typeof $2 === 'object'?{...$2, _brackets: true}: $2; }
     | condition_list
         {$$ = $condition_list}
     | condition_list COMPARE e 
