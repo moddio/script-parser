@@ -8,6 +8,7 @@ interface actionTostringProps {
   parentKey: string
   defaultReturnType: string
   gameData: { unitTypes: AnyObj }
+  nestedConditions?: boolean
 }
 
 const inValidKey = [
@@ -41,7 +42,7 @@ const excludeFuncs = {
   getPlayerVariable: ({ o: obj }: actionTostringProps) => obj.variable.text
 }
 
-export const actionToString = ({ o, parentKey, defaultReturnType, gameData }: actionTostringProps): string => {
+export const actionToString = ({ o, parentKey, defaultReturnType, gameData, nestedConditions }: actionTostringProps): string => {
   let output = ''
   if (o === null || o === undefined) {
     return output
@@ -73,11 +74,28 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData }: ac
   const obj = removeUnusedProperties(o)
   const keys = Object.keys(obj)
 
+  const operatorMap = {
+    AND: '&&',
+    OR: '||'
+  }
+
   // for comparison ,1 == 2
   if (obj.type === 'condition') {
-    const operator = obj.conditions[0].operator
-    const left = typeof obj.conditions[1] === 'object' ? actionToString({ o: obj.conditions[1], parentKey: operator, defaultReturnType, gameData }) : obj.conditions[1]
-    const right = typeof obj.conditions[2] === 'object' ? actionToString({ o: obj.conditions[2], parentKey: operator, defaultReturnType, gameData }) : obj.conditions[2]
+    let operator: string = obj.conditions[0].operator
+    const left = typeof obj.conditions[1] === 'object' ? actionToString({ o: obj.conditions[1], parentKey: operator, defaultReturnType, gameData, nestedConditions: operatorMap[operator as keyof typeof operatorMap] !== undefined }) : obj.conditions[1]
+    const right = typeof obj.conditions[2] === 'object' ? actionToString({ o: obj.conditions[2], parentKey: operator, defaultReturnType, gameData, nestedConditions: operatorMap[operator as keyof typeof operatorMap] !== undefined }) : obj.conditions[2]
+    // map AND, OR to '&&', '||'
+    operator = operatorMap[operator as keyof typeof operatorMap] ?? operator
+    output += `${left} ${operator} ${right}`
+    return output
+  }
+
+  if (nestedConditions === true) {
+    let operator: string = obj[0].operator
+    const left = typeof obj[1] === 'object' ? actionToString({ o: obj[1], parentKey: operator, defaultReturnType, gameData, nestedConditions: operatorMap[operator as keyof typeof operatorMap] !== undefined }) : obj[1]
+    const right = typeof obj[2] === 'object' ? actionToString({ o: obj[2], parentKey: operator, defaultReturnType, gameData, nestedConditions: operatorMap[operator as keyof typeof operatorMap] !== undefined }) : obj[2]
+    // map AND, OR to '&&', '||'
+    operator = operatorMap[operator as keyof typeof operatorMap] ?? operator
     output += `${left} ${operator} ${right}`
     return output
   }

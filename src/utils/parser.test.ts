@@ -10,21 +10,7 @@ describe('parser', () => {
   test('pos( 2+2, 2+2)', () => { expect(parser.parse('pos(2+2, 2+2)')).toMatchObject({ _returnType: 'position', function: 'xyCoordinate', x: { _returnType: 'number', function: 'calculate', items: [{ operator: '+' }, 2, 2] }, y: { _returnType: 'number', function: 'calculate', items: [{ operator: '+' }, 2, 2] } }) })
   test('thisEntity.testVar4', () => {
     expect(actionToString({
-      o: {
-        function: 'getValueOfEntityVariable',
-        variable: {
-          function: 'getEntityVariable',
-          variable: {
-            text: 'testVar4',
-            key: 'testVar4',
-            dataType: 'unitType',
-            entity: 'E1KEji34'
-          }
-        },
-        entity: {
-          function: 'thisEntity'
-        }
-      },
+      o: parser.parse('thisEntity.testVar4'),
       defaultReturnType: '',
       gameData: { unitTypes: {} },
       parentKey: ''
@@ -35,5 +21,21 @@ describe('parser', () => {
   })
   test('(1+1)+"hello"', () => {
     expect(parser.parse('(1+1)+"hello"')).toMatchObject({ _returnType: 'string', function: 'concat', textA: { _returnType: 'number', function: 'calculate', items: [{ operator: '+' }, 1, 1] }, textB: 'hello' })
+  })
+  test('1 != 1 and 10 > 1', () => {
+    expect(actionToString({
+      o: parser.parse('1 != 1 and 10 > 1'),
+      defaultReturnType: '',
+      gameData: { unitTypes: {} },
+      parentKey: ''
+    })).toBe('1 != 1 && 10 > 1')
+  })
+  test('1 != 1 and 10 > 1 and 10 > 1 and 10 > 1 and 10 > 1 and 10 > 1 or 10 < 100', () => {
+    expect(actionToString({
+      o: parser.parse('1 != 1 and 10 > 1 and 10 > 1 and 10 > 1 and 10 > 1 and 10 > 1 or 10 < 100'),
+      defaultReturnType: '',
+      gameData: { unitTypes: {} },
+      parentKey: ''
+    })).toBe('1 != 1 && 10 > 1 && 10 > 1 && 10 > 1 && 10 > 1 && 10 > 1 || 10 < 100')
   })
 })
