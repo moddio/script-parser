@@ -1,4 +1,5 @@
 import { aliasTable } from '../actions/aliasTable'
+import { multiDefinedTable } from '../actions/multiDefined'
 import { noBracketsFuncs } from '../actions/noBracketsFuncs'
 import { type AnyObj } from '../types'
 
@@ -128,15 +129,29 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, nest
     if (convertFunc !== undefined) {
       output += convertFunc({ o: obj, parentKey, defaultReturnType, gameData })
     } else {
-      output += `${aliasTable[obj.function as keyof typeof aliasTable] ?? obj.function}${needBrackets ? '(' : ''}`
-      for (let i = 0; i < keys.length; i++) {
-        if (checkIsValid(keys[i])) {
-          output += typeof obj[keys[i]] === 'object'
-            ? actionToString({ o: obj[keys[i]], parentKey: keys[i], defaultReturnType, gameData })
-            : typeof obj[keys[i]] === 'string' ? `'${obj[keys[i]]}'` : obj[keys[i]]
+      if (multiDefinedTable[aliasTable[obj.function as keyof typeof aliasTable] ?? obj.function] !== undefined) {
+        for (let i = 0; i < keys.length; i++) {
+          if (checkIsValid(keys[i])) {
+            output += typeof obj[keys[i]] === 'object'
+              ? actionToString({ o: obj[keys[i]], parentKey: keys[i], defaultReturnType, gameData })
+              : typeof obj[keys[i]] === 'string' ? `'${obj[keys[i]]}'` : obj[keys[i]]
+          }
+          if (keys[i] !== 'function' || i === keys.length - 1) {
+            output += keys.length - 1 === i ? '' : ', '
+          }
         }
-        if (keys[i] !== 'function' || i === keys.length - 1) {
-          output += keys.length - 1 === i ? needBrackets ? ')' : '' : ', '
+        output += `.${aliasTable[obj.function as keyof typeof aliasTable] ?? obj.function}`
+      } else {
+        output += `${aliasTable[obj.function as keyof typeof aliasTable] ?? obj.function}${needBrackets ? '(' : ''}`
+        for (let i = 0; i < keys.length; i++) {
+          if (checkIsValid(keys[i])) {
+            output += typeof obj[keys[i]] === 'object'
+              ? actionToString({ o: obj[keys[i]], parentKey: keys[i], defaultReturnType, gameData })
+              : typeof obj[keys[i]] === 'string' ? `'${obj[keys[i]]}'` : obj[keys[i]]
+          }
+          if (keys[i] !== 'function' || i === keys.length - 1) {
+            output += keys.length - 1 === i ? needBrackets ? ')' : '' : ', '
+          }
         }
       }
     }

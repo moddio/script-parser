@@ -55,4 +55,12 @@ describe('parser', () => {
       parentKey: ''
     })).toBe('thisEntity.$some_attr')
   })
+  test('pos(x, y).x', () => {
+    expect(actionToString({
+      o: parser.parse('pos(0, 1).x'),
+      defaultReturnType: '',
+      gameData: { unitTypes: {} },
+      parentKey: ''
+    })).toBe('pos(0, 1).x')
+  })
 })
