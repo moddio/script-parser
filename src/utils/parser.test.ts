@@ -46,4 +46,7 @@ describe('parser', () => {
       parentKey: ''
     })).toBe('(1 + 1 ) + "hello"')
   })
+  test('thisEntity.$some_attr"', () => {
+    expect(parser.parse('thisEntity.$some_attr')).toMatchObject({ attribute: 'some_attr', entity: { _returnType: 'entity', function: 'thisEntity' }, function: 'getEntityAttribute' })
+  })
 })

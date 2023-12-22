@@ -34,7 +34,7 @@
 [0-9]+("."[0-9]+)?\b  return 'NUMBER'
 "&&"|"and"                  return 'AND'
 "||"|"or"                 return 'OR'
-[a-zA-Z0-9]+          return 'NAME'
+[a-zA-Z0-9_]+          return 'NAME'
 ((">="|"<=")|"=="|">"|"<"|"!=")           return 'COMPARE'
 ","                   return ','
 "*"                   return '*'
@@ -49,6 +49,7 @@
 "]"                   return ']'
 "'"                   return "'"
 '"'                   return '"'
+".$"                  return '.$'
 "."                   return '.'
 <<EOF>>               return 'EOF'
 
@@ -220,7 +221,19 @@ e
      }
     }
     | e'.' NAME'(' expression_list ')'
-     {if(funcs[$NAME]) $$ = new Function(...funcs[$NAME].split('#')).apply(undefined, [$1, ...$expression_list]); else throwError($NAME + " is undefined")};
+     {if(funcs[$NAME]) $$ = new Function(...funcs[$NAME].split('#')).apply(undefined, [$1, ...$expression_list]); else throwError($NAME + " is undefined")}
+     | e '.$' NAME
+    {
+      if ($1._returnType === "entity") {
+        $$ = {
+          function: "getEntityAttribute",
+          attribute: $NAME,
+          entity: $1
+        }
+      } else {
+        throwError($NAME + " is undefined")
+      }
+    };
      
 //     | e '[' NAME ']'
 //     {$$ = attr[$NAME].apply(undefined,
