@@ -38,4 +38,12 @@ describe('parser', () => {
       parentKey: ''
     })).toBe('1 != 1 && 10 > 1 && 10 > 1 && 10 > 1 && 10 > 1 && 10 > 1 || 10 < 100')
   })
+  test('(1+1)+"hello"', () => {
+    expect(actionToString({
+      o: parser.parse('(1+1)+"hello"'),
+      defaultReturnType: '',
+      gameData: { unitTypes: {} },
+      parentKey: ''
+    })).toBe('(1 + 1 ) + "hello"')
+  })
 })

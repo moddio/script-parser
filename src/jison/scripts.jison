@@ -15,7 +15,7 @@
     return typeof s=== 'string' ? s.replaceAll(/<\/?.+?>/g, "") : s
   }
   function convertCalcToConcat(o: any): any {   
-  return o.items && o.items[1] && o._brackets === undefined? {
+  return o.items && o.items[1] && o.brackets === undefined? {
     "function": "concat",
     "_returnType": "string",
     "textA": typeof o.items[1] === 'object'?convertCalcToConcat(o.items[1]): o.items[1],
@@ -121,7 +121,7 @@ e
     | '-' e %prec UMINUS
         { $$ = { function: 'calculate', _returnType:'number', items: [{operator:"*"},$2, -1]} }
     | '(' e ')'
-        { $$ = typeof $2 === 'object'?{...$2, _brackets: true}: $2; }
+        { $$ = typeof $2 === 'object'?{...$2, brackets: true}: $2; }
     | condition_list
         {$$ = $condition_list}
     | condition_list COMPARE e 

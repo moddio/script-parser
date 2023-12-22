@@ -42,6 +42,8 @@ const excludeFuncs = {
   getPlayerVariable: ({ o: obj }: actionTostringProps) => obj.variable.text
 }
 
+const addBracketsWhenNeeded = (obj: AnyObj, output: string): string => obj.brackets === true ? `(${output})` : output
+
 export const actionToString = ({ o, parentKey, defaultReturnType, gameData, nestedConditions }: actionTostringProps): string => {
   let output = ''
   if (o === null || o === undefined) {
@@ -87,7 +89,7 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, nest
     // map AND, OR to '&&', '||'
     operator = operatorMap[operator as keyof typeof operatorMap] ?? operator
     output += `${left} ${operator} ${right}`
-    return output
+    return addBracketsWhenNeeded(obj, output)
   }
 
   if (nestedConditions === true) {
@@ -97,7 +99,7 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, nest
     // map AND, OR to '&&', '||'
     operator = operatorMap[operator as keyof typeof operatorMap] ?? operator
     output += `${left} ${operator} ${right}`
-    return output
+    return addBracketsWhenNeeded(obj, output)
   }
 
   // for calc, e.g 1 + 1, 1 ^ 2
@@ -111,7 +113,7 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, nest
       const needBrackets = ['+', '-'].includes(operator) ? !!['*', '/'].includes(parentKey) : false
       output += `${needBrackets ? '(' : ''}${left} ${operator} ${right}${needBrackets ? ')' : ''} `
     }
-    return output
+    return addBracketsWhenNeeded(obj, output)
   }
 
   // for normal action like pos(2, 2)
@@ -137,7 +139,7 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, nest
         }
       }
     }
-    return output
+    return addBracketsWhenNeeded(obj, output)
   }
-  return output
+  return addBracketsWhenNeeded(obj, output)
 }
