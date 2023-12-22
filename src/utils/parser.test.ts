@@ -14,7 +14,7 @@ describe('parser', () => {
       defaultReturnType: '',
       gameData: { unitTypes: {} },
       parentKey: ''
-    })).toBe('thisEntity.testVar4 ')
+    })).toBe('thisEntity.testVar4')
   })
   test('1+1+"hello"', () => {
     expect(parser.parse('1+1+"hello"')).toMatchObject({ _returnType: 'string', function: 'concat', textA: { _returnType: 'string', function: 'concat', textA: 1, textB: 1 }, textB: 'hello' })
@@ -46,7 +46,13 @@ describe('parser', () => {
       parentKey: ''
     })).toBe('(1 + 1 ) + "hello"')
   })
-  test('thisEntity.$some_attr"', () => {
+  test('thisEntity.$some_attr', () => {
     expect(parser.parse('thisEntity.$some_attr')).toMatchObject({ attribute: 'some_attr', entity: { _returnType: 'entity', function: 'thisEntity' }, function: 'getEntityAttribute' })
+    expect(actionToString({
+      o: parser.parse('thisEntity.$some_attr'),
+      defaultReturnType: '',
+      gameData: { unitTypes: {} },
+      parentKey: ''
+    })).toBe('thisEntity.$some_attr')
   })
 })

@@ -36,10 +36,11 @@ export const removeUnusedProperties = (obj: AnyObj): AnyObj => {
 
 const excludeFuncs = {
   concat: ({ o: obj, defaultReturnType, gameData, parentKey }: actionTostringProps) => `${actionToString({ o: obj.textA, defaultReturnType, gameData, parentKey })} + ${actionToString({ o: obj.textB, parentKey, defaultReturnType, gameData })}`,
-  getValueOfEntityVariable: ({ o: obj, defaultReturnType, gameData, parentKey }: actionTostringProps) => `${typeof obj.entity === 'object' ? actionToString({ o: obj.entity, parentKey, defaultReturnType, gameData }) : obj.entity}.${obj.variable.variable.key} `,
-  getValueOfPlayerVariable: ({ o: obj, defaultReturnType, gameData, parentKey }: actionTostringProps) => `${typeof obj.player === 'object' ? actionToString({ o: obj.player, parentKey, defaultReturnType, gameData }) : obj.player}.${obj.variable.variable.key} `,
+  getValueOfEntityVariable: ({ o: obj, defaultReturnType, gameData, parentKey }: actionTostringProps) => `${typeof obj.entity === 'object' ? actionToString({ o: obj.entity, parentKey, defaultReturnType, gameData }) : obj.entity}.${obj.variable.variable.key}`,
+  getValueOfPlayerVariable: ({ o: obj, defaultReturnType, gameData, parentKey }: actionTostringProps) => `${typeof obj.player === 'object' ? actionToString({ o: obj.player, parentKey, defaultReturnType, gameData }) : obj.player}.${obj.variable.variable.key}`,
   getEntityVariable: ({ o: obj }: actionTostringProps) => obj.variable.text,
-  getPlayerVariable: ({ o: obj }: actionTostringProps) => obj.variable.text
+  getPlayerVariable: ({ o: obj }: actionTostringProps) => obj.variable.text,
+  getEntityAttribute: ({ o: obj, defaultReturnType, gameData, parentKey }: actionTostringProps) => `${typeof obj.entity === 'object' ? actionToString({ o: obj.entity, parentKey, defaultReturnType, gameData }) : obj.entity}.$${obj.attribute}`
 }
 
 const addBracketsWhenNeeded = (obj: AnyObj, output: string): string => obj.brackets === true ? `(${output})` : output
