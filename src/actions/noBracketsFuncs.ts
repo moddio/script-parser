@@ -15,6 +15,7 @@ export const noBracketsFuncs = [
   'getLastCreatedItem',
   'getLastCreatedProjectile',
   'getLastTouchingUnit',
+  'getLastTouchedUnit',
   'getLastOverlappingItem',
   'entityLastRaycastCollisionPosition',
   'getLastCastingUnit',
