@@ -6,7 +6,30 @@
 
 
 
+  function getType(o: any) {
+    return typeof o === 'object'? o._returnType : typeof o
+  }
 
+  function autoInsertParameters(name: string, p: any, other_p?: any[]) {
+    let pos = -1
+    const type = getType(p)
+    const newArray = other_p || []
+    funcs[name].split('#').forEach((s: string, idx: number)=> {
+      if(pos === -1 && s.includes('return') === false && s.split(':')[1]?.includes(type)) {
+        pos = idx
+      }
+    })
+    if(other_p !== undefined) {
+      newArray.splice(pos, 0, p)  
+    } else {
+      for(let i = 0; i < pos; i++) {
+        newArray.push(undefined)
+      }
+      newArray.push(p)
+    }
+    console.log(newArray, pos, p, other_p)
+    return newArray
+  } 
 
   function getFunc(name: string) {
     return new Function(...funcs[name].split('#').map((o:string)=>o.includes('return')?o : o.split(':')[0]))
@@ -206,7 +229,7 @@ e
     | STRING
         {$$ = yytext.slice(1, yytext.length-1)}
     | e'.' NAME
-     {if(funcs[$NAME]) $$ = getFunc($NAME).apply(undefined, [$1]); else {
+     {if(funcs[$NAME]) $$ = getFunc($NAME).apply(undefined, autoInsertParameters($NAME, $1)); else {
      if($1._returnType === "entity") {
       $$ = {
         function: "getValueOfEntityVariable",
@@ -224,7 +247,7 @@ e
      }
     }
     | e'.' NAME'(' expression_list ')'
-     {if(funcs[$NAME]) $$ = getFunc($NAME).apply(undefined, [$1, ...$expression_list]); else throwError($NAME + " is undefined")}
+     {if(funcs[$NAME]) $$ = getFunc($NAME).apply(undefined, autoInsertParameters($NAME, $1, $expression_list)); else throwError($NAME + " is undefined")}
      | e '.$' NAME
     {
       if ($1._returnType === "entity") {

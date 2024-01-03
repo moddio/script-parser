@@ -63,4 +63,16 @@ describe('parser', () => {
       parentKey: ''
     })).toBe('pos(0, 1).x')
   })
+  test('x.pos(y)', () => {
+    expect(parser.parse('0.pos(1)')).toMatchObject({ _returnType: 'position', function: 'xyCoordinate', x: 0, y: 1 })
+    expect(actionToString({
+      o: parser.parse('0.pos(1)'),
+      defaultReturnType: '',
+      gameData: { unitTypes: {} },
+      parentKey: ''
+    })).toBe('pos(0, 1)')
+  })
+  test('5.transformRegionDimensions(thisEntity, 2, 5, 10)', () => {
+    expect(parser.parse('5.transformRegionDimensions(thisEntity, 2, 5, 10)')).toMatchObject({ _returnType: 'region', function: 'transformRegionDimensions', height: 10, region: { _returnType: 'entity', function: 'thisEntity' }, width: 5, x: 5, y: 2 })
+  })
 })
