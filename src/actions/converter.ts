@@ -4,24 +4,26 @@ import { aliasTable } from './aliasTable'
 import { multiDefinedTable } from './multiDefined'
 import { type AnyObj } from '../types'
 
+// eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+const getType = (frag: AnyObj): string => frag?.extraData?.type || frag?.extraData?.dataType || frag?.extraData?.dataTypes || frag?.dataType
 const getVars = (value: any, actionObj: any): string => {
-  let length = 0
+  const types: string[] = []
   value.data?.fragments.forEach((frag: { type: string, field: string | undefined }, index: any) => {
     if (frag.type === 'variable' && (frag.field !== undefined)) {
-      actionObj[frag.field] = String.fromCharCode(length + 97)
-      length += 1
+      actionObj[frag.field] = String.fromCharCode(types.length + 97)
+      types.push(getType(frag))
     }
   })
   let str = ''
-  for (let i = 0; i < length; i++) {
-    str += String.fromCharCode(i + 97) + '#'
+  for (let i = 0; i < types.length; i++) {
+    str += `${String.fromCharCode(i + 97)}:${types[i]}#`
   }
   return str
 }
 
 const postProcess = (actionObjs: AnyObj): void => {
-  actionObjs.concat = "a#b#{return {\"function\":\"concat\",_returnType:'string',textA:a,textB:b}}"
-  actionObjs.getVariable = "a#{return {\"function\":\"getVariable\",_returnType:'Multiple',variableName:a}}"
+  actionObjs.concat = "a:string,number#b:string,number#{return {\"function\":\"concat\",_returnType:'string',textA:a,textB:b}}"
+  actionObjs.getVariable = "a:string#{return {\"function\":\"getVariable\",_returnType:'Multiple',variableName:a}}"
 }
 
 axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
