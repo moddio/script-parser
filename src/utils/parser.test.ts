@@ -1,10 +1,10 @@
 import { actionToString, parser } from '..'
 
 describe('parser', () => {
-  test('1 == 1', () => { expect(parser.parse('1 == 1')).toMatchObject({ conditions: [{ operandType: 'number', operator: '==' }, 1, 1], else: [], then: [], type: 'condition' }) })
-  test('1 == 1 convert back', () => { expect(actionToString({ o: { conditions: [{ operandType: 'number', operator: '==' }, 1, 1], else: [], then: [], type: 'condition' }, defaultReturnType: '', parentKey: '', gameData: { unitTypes: {} } })).toBe('1 == 1') })
+  test('1 == 1', () => { expect(parser.parse('1 == 1')).toMatchObject([{ operandType: 'number', operator: '==' }, 1, 1]) })
+  test('1 == 1 convert back', () => { expect(actionToString({ o: parser.parse('1 == 1'), defaultReturnType: '', parentKey: '', gameData: { unitTypes: {} } })).toBe('1 == 1') })
   test('1 == 1 && 2 == 2', () => {
-    expect(parser.parse('1 == 1 || 2 == 2')).toMatchObject({ _returnType: 'conditions', conditions: [{ operandType: 'or', operator: 'OR' }, [{ operandType: 'number', operator: '==' }, 1, 1], [{ operandType: 'number', operator: '==' }, 2, 2]], else: [], then: [], type: 'condition' })
+    expect(parser.parse('1 == 1 || 2 == 2')).toMatchObject([{ operandType: 'or', operator: 'OR' }, [{ operandType: 'number', operator: '==' }, 1, 1], [{ operandType: 'number', operator: '==' }, 2, 2]])
   })
 
   test('pos( 2+2, 2+2)', () => { expect(parser.parse('pos(2+2, 2+2)')).toMatchObject({ _returnType: 'position', function: 'xyCoordinate', x: { _returnType: 'number', function: 'calculate', items: [{ operator: '+' }, 2, 2] }, y: { _returnType: 'number', function: 'calculate', items: [{ operator: '+' }, 2, 2] } }) })
@@ -76,7 +76,7 @@ describe('parser', () => {
     expect(parser.parse('5.transformRegionDimensions(thisEntity, 2, 5, 10)')).toMatchObject({ _returnType: 'region', function: 'transformRegionDimensions', height: 10, region: { _returnType: 'entity', function: 'thisEntity' }, width: 5, x: 5, y: 2 })
   })
   test('true == true', () => {
-    expect(parser.parse('true == false')).toMatchObject({ conditions: [{ operandType: 'boolean', operator: '==' }, true, false], else: [], then: [], type: 'condition' })
+    expect(parser.parse('true == false')).toMatchObject([{ operandType: 'boolean', operator: '==' }, true, false])
     expect(actionToString({
       o: parser.parse('true == false'),
       defaultReturnType: '',
@@ -85,7 +85,7 @@ describe('parser', () => {
     })).toBe('true == false')
   })
   test(' "a" != "b" ', () => {
-    expect(parser.parse(' "a" != "b" ')).toMatchObject({ conditions: [{ operandType: 'string', operator: '!=' }, 'a', 'b'], else: [], then: [], type: 'condition' })
+    expect(parser.parse(' "a" != "b" ')).toMatchObject([{ operandType: 'string', operator: '!=' }, 'a', 'b'])
     expect(actionToString({
       o: parser.parse('"a" != "b"'),
       defaultReturnType: '',

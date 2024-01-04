@@ -101,19 +101,14 @@ condition_list
     : condition_list COMPARE e
        {$$ = $1.concat([$3]);}
     | e COMPARE e
- { $$ = {
-               type: "condition",
-               conditions: [
-                    {
-                         "operandType": typeof $3 === 'object'?$3._returnType : typeof $3,
-                         "operator": $COMPARE
-                    },
-                    $1,
-                    $3
-               ],
-               "then": [],
-               "else": []
-          }
+    { $$ = [
+      {
+        "operandType": typeof $3 === 'object'?$3._returnType : typeof $3,
+        "operator": $COMPARE
+      },
+      $1,
+      $3
+    ]
     }
     ;
 expression_list
@@ -154,54 +149,36 @@ e
     | condition_list
         {$$ = $condition_list}
     | condition_list COMPARE e 
-        { $$ = {
-               type: "condition",
-               conditions: [
+        { $$ = [
                     {
                          "operandType": typeof $3 === 'object'?$3._returnType : typeof $3,
                          "operator": $COMPARE
                     },
                     $1,
                     $3
-               ],
-               "then": [],
-               "else": []
-          }
+               ]
     }
     | e AND e {
           $$ = 
-          {
-            type: "condition",
-            _returnType: "conditions",
-            conditions: [
+            [
             {
               "operandType": "and",
               "operator": "AND"
             },
             $1.conditions ?? $1,
             $3.conditions ?? $3
-            ],
-            "then": [],
-            "else": []
-            }
+            ]
           }
     
     | e OR e {
-          $$ = 
-          {
-            type: "condition",
-            _returnType: "conditions",
-            conditions: [
+          $$ = [
             {
               "operandType": "or",
               "operator": "OR"
             },
             $1.conditions ?? $1,
             $3.conditions ?? $3
-            ],
-            "then": [],
-            "else": []
-            }
+            ]
           }
     | NUMBER
         {$$ = Number(yytext);}
