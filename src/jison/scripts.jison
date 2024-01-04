@@ -56,6 +56,8 @@
 %%
 
 \s+                   /* skip whitespace */
+'true'                return "true"
+'false'               return "false"
 ["][^"]*["]|['][^']*[']           return 'STRING'
 [0-9]+("."[0-9]+)?\b  return 'NUMBER'
 "&&"|"and"                  return 'AND'
@@ -103,7 +105,7 @@ condition_list
                type: "condition",
                conditions: [
                     {
-                         "operandType": typeof $1 === 'object'?$1._returnType : typeof $1,
+                         "operandType": typeof $3 === 'object'?$3._returnType : typeof $3,
                          "operator": $COMPARE
                     },
                     $1,
@@ -156,7 +158,7 @@ e
                type: "condition",
                conditions: [
                     {
-                         "operandType": typeof $1 === 'object'?$1._returnType : typeof $1,
+                         "operandType": typeof $3 === 'object'?$3._returnType : typeof $3,
                          "operator": $COMPARE
                     },
                     $1,
@@ -245,6 +247,12 @@ e
      } else {
        throwError($NAME + " is undefined")}
      }
+    }
+    | 'true' {
+      $$ = true
+    }
+    | 'false' {
+      $$ = false
     }
     | e'.' NAME'(' expression_list ')'
      {if(funcs[$NAME]) $$ = getFunc($NAME).apply(undefined, autoInsertParameters($NAME, $1, $expression_list)); else throwError($NAME + " is undefined")}

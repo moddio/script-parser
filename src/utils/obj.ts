@@ -86,9 +86,11 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, nest
   // for comparison ,1 == 2
   if (obj.type === 'condition') {
     let operator: string = obj.conditions[0].operator
-    const left = typeof obj.conditions[1] === 'object' ? actionToString({ o: obj.conditions[1], parentKey: operator, defaultReturnType, gameData, nestedConditions: operatorMap[operator as keyof typeof operatorMap] !== undefined }) : obj.conditions[1]
-    const right = typeof obj.conditions[2] === 'object' ? actionToString({ o: obj.conditions[2], parentKey: operator, defaultReturnType, gameData, nestedConditions: operatorMap[operator as keyof typeof operatorMap] !== undefined }) : obj.conditions[2]
+    let left = typeof obj.conditions[1] === 'object' ? actionToString({ o: obj.conditions[1], parentKey: operator, defaultReturnType, gameData, nestedConditions: operatorMap[operator as keyof typeof operatorMap] !== undefined }) : obj.conditions[1]
+    let right = typeof obj.conditions[2] === 'object' ? actionToString({ o: obj.conditions[2], parentKey: operator, defaultReturnType, gameData, nestedConditions: operatorMap[operator as keyof typeof operatorMap] !== undefined }) : obj.conditions[2]
     // map AND, OR to '&&', '||'
+    left = typeof obj.conditions[1] === 'string' ? `'${left}'` : left
+    right = typeof obj.conditions[2] === 'string' ? `'${right}'` : right
     operator = operatorMap[operator as keyof typeof operatorMap] ?? operator
     output += `${left} ${operator} ${right}`
     return addBracketsWhenNeeded(obj, output)
@@ -96,9 +98,11 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, nest
 
   if (nestedConditions === true) {
     let operator: string = obj[0].operator
-    const left = typeof obj[1] === 'object' ? actionToString({ o: obj[1], parentKey: operator, defaultReturnType, gameData, nestedConditions: operatorMap[operator as keyof typeof operatorMap] !== undefined }) : obj[1]
-    const right = typeof obj[2] === 'object' ? actionToString({ o: obj[2], parentKey: operator, defaultReturnType, gameData, nestedConditions: operatorMap[operator as keyof typeof operatorMap] !== undefined }) : obj[2]
+    let left = typeof obj[1] === 'object' ? actionToString({ o: obj[1], parentKey: operator, defaultReturnType, gameData, nestedConditions: operatorMap[operator as keyof typeof operatorMap] !== undefined }) : obj[1]
+    let right = typeof obj[2] === 'object' ? actionToString({ o: obj[2], parentKey: operator, defaultReturnType, gameData, nestedConditions: operatorMap[operator as keyof typeof operatorMap] !== undefined }) : obj[2]
     // map AND, OR to '&&', '||'
+    left = typeof obj[1] === 'string' ? `'${left}'` : left
+    right = typeof obj[2] === 'string' ? `'${right}'` : right
     operator = operatorMap[operator as keyof typeof operatorMap] ?? operator
     output += `${left} ${operator} ${right}`
     return addBracketsWhenNeeded(obj, output)

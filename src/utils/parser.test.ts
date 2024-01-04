@@ -75,4 +75,22 @@ describe('parser', () => {
   test('5.transformRegionDimensions(thisEntity, 2, 5, 10)', () => {
     expect(parser.parse('5.transformRegionDimensions(thisEntity, 2, 5, 10)')).toMatchObject({ _returnType: 'region', function: 'transformRegionDimensions', height: 10, region: { _returnType: 'entity', function: 'thisEntity' }, width: 5, x: 5, y: 2 })
   })
+  test('true == true', () => {
+    expect(parser.parse('true == false')).toMatchObject({ conditions: [{ operandType: 'boolean', operator: '==' }, true, false], else: [], then: [], type: 'condition' })
+    expect(actionToString({
+      o: parser.parse('true == false'),
+      defaultReturnType: '',
+      gameData: { unitTypes: {} },
+      parentKey: ''
+    })).toBe('true == false')
+  })
+  test(' "a" != "b" ', () => {
+    expect(parser.parse(' "a" != "b" ')).toMatchObject({ conditions: [{ operandType: 'string', operator: '!=' }, 'a', 'b'], else: [], then: [], type: 'condition' })
+    expect(actionToString({
+      o: parser.parse('"a" != "b"'),
+      defaultReturnType: '',
+      gameData: { unitTypes: {} },
+      parentKey: ''
+    })).toBe("'a' != 'b'")
+  })
 })
