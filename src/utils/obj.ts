@@ -8,7 +8,7 @@ interface actionTostringProps {
   o: any
   parentKey: string
   defaultReturnType: string
-  gameData: { unitTypes: AnyObj }
+  gameData: { unitTypes?: AnyObj, scripts?: AnyObj }
   nestedConditions?: boolean
 }
 
@@ -55,7 +55,10 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData }: ac
     case 'string': {
       switch (defaultReturnType) {
         case 'unitType': {
-          return `${(Object.values(gameData.unitTypes).find(v => v.id === o)?.name) ?? o} `
+          return `${(Object.values(gameData.unitTypes ?? {}).find(v => v.id === o)?.name) ?? o} `
+        }
+        case 'script': {
+          return `${(Object.values(gameData.scripts ?? {}).find(v => v.id === o)?.name) ?? o} `
         }
         default: {
           return `"${o}"`
