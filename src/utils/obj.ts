@@ -58,7 +58,16 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData }: ac
           return `${(Object.values(gameData.unitTypes ?? {}).find(v => v.id === o)?.name) ?? o}`
         }
         case 'script': {
-          return `${(Object.values(gameData.scripts ?? {}).find(v => v.key === o)?.name) ?? o}`
+          let returnVal = o
+          returnVal = Object.values(gameData.scripts ?? {}).find(v => v.key === o)?.name ?? returnVal
+          Object.values(gameData.unitTypes ?? {}).forEach(v => {
+            Object.values(v.scripts).forEach((script: any) => {
+              if (script.key === o) {
+                returnVal = script.name
+              }
+            })
+          })
+          return returnVal
         }
         default: {
           return `"${o}"`
