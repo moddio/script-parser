@@ -27,6 +27,9 @@ export const checkIsValid = (key: string): boolean => {
 
 export const removeUnusedProperties = (obj: AnyObj): AnyObj => {
   const newObj: AnyObj = {}
+  if (obj === undefined || obj === null || Array.isArray(obj)) {
+    return obj
+  }
   Object.keys(obj).forEach(key => {
     if (!key.startsWith('_')) {
       newObj[key] = typeof obj[key] === 'object' ? removeUnusedProperties(obj[key]) : obj[key]
