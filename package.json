@@ -8,6 +8,7 @@
         "buildActions": "ts-node-esm ./src/actions/converter.ts",
         "build": "pnpm run buildActions && pnpm run buildJison && npx tsc -p tsconfig.json",
         "test": "jest",
+        "removeTypes": "ts-node-esm ./src/jison/removeTypes.ts",
         "bump": "npx auto-version --patch"
     },
     "keywords": [],
