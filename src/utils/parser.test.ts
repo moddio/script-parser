@@ -1,4 +1,5 @@
 import { actionToString, parser } from '..'
+import { tmpGameData } from '../tmp/tmpGameData'
 
 describe('parser', () => {
   test('1 == 1', () => { expect(parser.parse('1 == 1')).toMatchObject([{ operandType: 'number', operator: '==' }, 1, 1]) })
@@ -92,5 +93,14 @@ describe('parser', () => {
       gameData: { unitTypes: {} },
       parentKey: ''
     })).toBe("'a' != 'b'")
+  })
+  test("getSelectedEntity.type == 'homie'", () => {
+    expect(parser.parse("getSelectedEntity.type == 'homie'")).toMatchObject([{ operandType: 'string', operator: '==' }, { entity: { _returnType: 'entity', function: 'getSelectedEntity' }, function: 'getItemTypeOfItem' }, 'homie'])
+    expect(actionToString({
+      o: parser.parse("getSelectedEntity.type == 'homie'"),
+      defaultReturnType: '',
+      gameData: tmpGameData,
+      parentKey: ''
+    })).toBe("getSelectedEntity.type == 'homie'")
   })
 })
