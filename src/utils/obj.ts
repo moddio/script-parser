@@ -11,6 +11,7 @@ interface actionTostringProps {
   gameData: { unitTypes?: AnyObj, scripts?: AnyObj }
   indentation?: number
   nestedConditions?: boolean
+  disabled?: boolean
 }
 
 const DEFAULTINDENTATION = 2
@@ -24,7 +25,7 @@ interface conditionObject {
 
 interface repeatObject {
   type: 'repeat'
-  count: number,
+  count: number
   actions: Array<Record<string, any>>
 }
 
@@ -59,51 +60,52 @@ export const removeUnusedProperties = (obj: AnyObj): AnyObj => {
 }
 
 const excludeFuncs = {
-  concat: ({ o, defaultReturnType, gameData, parentKey, indentation }: actionTostringProps) => {
+  concat: ({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
     const obj: Record<string, any> = o as Record<string, any>
-    return `${actionToString({ o: obj.textA, defaultReturnType, gameData, parentKey, indentation })} + ${actionToString({ o: obj.textB, parentKey, defaultReturnType, gameData, indentation })}`
+    return `${actionToString({ o: obj.textA, defaultReturnType, gameData, parentKey })} + ${actionToString({ o: obj.textB, parentKey, defaultReturnType, gameData })}`
   },
   getValueOfEntityVariable: ({ o, defaultReturnType, gameData, parentKey, indentation }: actionTostringProps) => {
     const obj: Record<string, any> = o as Record<string, any>
-    return `${typeof obj.entity === 'object' ? actionToString({ o: obj.entity, parentKey, defaultReturnType, gameData, indentation }) : obj.entity}.${obj.variable?.variable?.key}`
+    return `${typeof obj.entity === 'object' ? actionToString({ o: obj.entity, parentKey, defaultReturnType, gameData }) : obj.entity}.${obj.variable?.variable?.key}`
   },
   getValueOfPlayerVariable: ({ o, defaultReturnType, gameData, parentKey, indentation }: actionTostringProps) => {
     const obj: Record<string, any> = o as Record<string, any>
-    return `${typeof obj.player === 'object' ? actionToString({ o: obj.player, parentKey, defaultReturnType, gameData, indentation }) : obj.player}.${obj.variable?.variable?.key}`
+    return `${typeof obj.player === 'object' ? actionToString({ o: obj.player, parentKey, defaultReturnType, gameData }) : obj.player}.${obj.variable?.variable?.key}`
   },
   getEntityVariable: ({ o: obj }: actionTostringProps) => (obj as Record<string, any>).variable?.text,
   getPlayerVariable: ({ o: obj }: actionTostringProps) => (obj as Record<string, any>).variable?.text,
   getEntityAttribute: ({ o, defaultReturnType, gameData, parentKey, indentation }: actionTostringProps) => {
     const obj: Record<string, any> = o as Record<string, any>
-    return `${typeof obj.entity === 'object' ? actionToString({ o: obj.entity, parentKey, defaultReturnType, gameData, indentation }) : obj.entity}.$${obj.attribute}`
+    return `${typeof obj.entity === 'object' ? actionToString({ o: obj.entity, parentKey, defaultReturnType, gameData }) : obj.entity}.$${obj.attribute}`
   },
-  repeat: ({ o, defaultReturnType, gameData, parentKey, indentation = 0 }: actionTostringProps) => {
+  repeat: ({ o, defaultReturnType, gameData, parentKey, indentation = 0, disabled }: actionTostringProps) => {
     const obj = o as repeatObject
     const nowIndentation = DEFAULTINDENTATION + indentation
     return `repeat (${actionToString({ o: obj.count, defaultReturnType, gameData, parentKey, indentation: 0 })}) {
-${actionToString({ o: obj.actions, defaultReturnType, gameData, parentKey, indentation: nowIndentation })}
-${' '.repeat(indentation)}}`
+${actionToString({ o: obj.actions, defaultReturnType, gameData, parentKey, indentation: nowIndentation, disabled })}
+${disabled === true ? '// ' : ''}${' '.repeat(indentation)}}`
   },
-  condition: ({ o, defaultReturnType, gameData, parentKey, indentation = 0 }: actionTostringProps) => {
+  condition: ({ o, defaultReturnType, gameData, parentKey, indentation = 0, disabled }: actionTostringProps) => {
     const obj = o as conditionObject
     const nowIndentation = DEFAULTINDENTATION + indentation
     return `if (${actionToString({ o: obj.conditions, defaultReturnType, gameData, parentKey, indentation: 0 })}) {
-${actionToString({ o: obj.then, defaultReturnType, gameData, parentKey, indentation: nowIndentation })}
-${' '.repeat(indentation)}}${obj.else.length > 0
+${actionToString({ o: obj.then, defaultReturnType, gameData, parentKey, indentation: nowIndentation, disabled })}
+${disabled === true ? '// ' : ''}${' '.repeat(indentation)}}${obj.else.length > 0
         ? ` else {
-${actionToString({ o: obj.else, defaultReturnType, gameData, parentKey, indentation: nowIndentation })}
-${' '.repeat(indentation)}}`
+${actionToString({ o: obj.else, defaultReturnType, gameData, parentKey, indentation: nowIndentation, disabled })}
+${disabled === true ? '// ' : ''}${' '.repeat(indentation)}}`
         : ''}`
   }
 }
 
 const addBracketsWhenNeeded = (obj: AnyObj, output: string): string => obj.brackets === true ? `(${output})` : output
 
-export const actionToString = ({ o, parentKey, defaultReturnType, gameData, indentation = 0 }: actionTostringProps): string => {
+export const actionToString = ({ o, parentKey, defaultReturnType, gameData, indentation = 0, disabled }: actionTostringProps): string => {
   let output = ''
   if (o === null || o === undefined) {
     return output
   }
+  const isDisabled = (o as Record<string, any>).disabled === true || (disabled ?? false)
   if ((o as Record<string, any>).comment !== undefined) {
     (o as Record<string, any>).comment.split('\n').forEach((comment: string) => {
       if (comment !== '') {
@@ -111,11 +113,14 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, inde
       }
     })
   }
+  if (isDisabled) {
+    output += '// '
+  }
   output += ' '.repeat(indentation)
 
   if (Array.isArray(o) && o.every(o => typeof o === 'object' && !Array.isArray(o))) {
     return o.map(obj => {
-      return actionToString({ o: obj, parentKey, defaultReturnType, gameData, indentation })
+      return actionToString({ o: obj, parentKey, defaultReturnType, gameData, indentation, disabled: isDisabled })
     }).join('\n')
   }
 
@@ -166,7 +171,7 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, inde
   // for raw data json
   if (obj.triggers !== undefined) {
     obj.triggers.forEach((t: { type: string }) => { output += `@${t.type}\n` })
-    output += actionToString({ o: obj.actions, defaultReturnType, gameData, indentation, parentKey })
+    output += actionToString({ o: obj.actions, defaultReturnType, gameData, indentation, parentKey, disabled: isDisabled })
   }
   // for comparison ,1 == 2
   if (obj[0] !== undefined && obj[0].operandType !== undefined) {
@@ -206,7 +211,7 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, inde
     }
     const convertFunc = excludeFuncs[fn as keyof typeof excludeFuncs]
     if (convertFunc !== undefined) {
-      output += convertFunc({ o: obj, parentKey, defaultReturnType, gameData, indentation })
+      output += convertFunc({ o: obj, parentKey, defaultReturnType, gameData, indentation, disabled: isDisabled })
     } else {
       if (multiDefinedTable[aliasTable[fn as keyof typeof aliasTable] ?? fn] !== undefined) {
         for (let i = 0; i < keys.length; i++) {
