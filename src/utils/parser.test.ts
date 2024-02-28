@@ -250,10 +250,15 @@ repeat(createUnitAtPosition('rock', getVariable('AI resources'), randPos(getEnti
       gameData: tmpGameData,
       parentKey: ''
     })).toBe(
-      `assignPlayerType('aiNeutral', getVariable('AI neutral'))
-assignPlayerType('aiHostile', getVariable('AI hostile'))
-repeat(8, createUnitAtPosition(0, randPos(getEntireMapRegion()), getVariable('AI resources'), 'tree'))
-repeat(createUnitAtPosition('rock', getVariable('AI resources'), randPos(getEntireMapRegion()), 0), 5)`
+      `// respawn players
+if  (getAttributeTypeOfAttribute(triggeringAttr) == 'respawnTimer')  {
+  createUnitAtPosition('survivor', randPos(getEntireMapRegion()), triggeringPlayer, 0)
+  playerCameraTrackUnit(triggeringPlayer, triggeringPlayer, lastCreatedUnit)
+  forAllUnits(allUnitsOwnedByPlayer(triggeringPlayer, triggeringPlayer), destroyEntity(selectedUnit()), 'when a player leaves, destroy all units owned by that player')
+} else {
+
+}
+`
     )
   })
 })
