@@ -171,8 +171,12 @@ describe('parser', () => {
     })).toBe(
       `assignPlayerType('aiNeutral', getVariable('AI neutral'))
 assignPlayerType('aiHostile', getVariable('AI hostile'))
-repeat(8, createUnitAtPosition(0, randPos(getEntireMapRegion()), getVariable('AI resources'), 'tree'))
-repeat(createUnitAtPosition('rock', getVariable('AI resources'), randPos(getEntireMapRegion()), 0), 5)`
+repeat (8) {
+  createUnitAtPosition(0, randPos(getEntireMapRegion()), getVariable('AI resources'), 'tree')
+}
+repeat (5) {
+  createUnitAtPosition('rock', getVariable('AI resources'), randPos(getEntireMapRegion()), 0)
+}`
     )
   })
   test('multiline actions with comments, if', () => {
@@ -258,8 +262,7 @@ if (getAttributeTypeOfAttribute(triggeringAttr) == 'respawnTimer') {
   playerCameraTrackUnit(triggeringPlayer, triggeringPlayer, lastCreatedUnit)
   // when a player leaves, destroy all units owned by that player
   forAllUnits(allUnitsOwnedByPlayer(triggeringPlayer, triggeringPlayer), destroyEntity(selectedUnit()))
-}
-`
+}`
     )
   })
   test('multiline actions with raw json data', () => {
@@ -343,8 +346,12 @@ if (getAttributeTypeOfAttribute(triggeringAttr) == 'respawnTimer') {
       `@gameStart
 assignPlayerType('aiNeutral', getVariable('AI neutral'))
 assignPlayerType('aiHostile', getVariable('AI hostile'))
-repeat(8, createUnitAtPosition(0, randPos(getEntireMapRegion()), getVariable('AI resources'), 'tree'))
-repeat(createUnitAtPosition('rock', getVariable('AI resources'), randPos(getEntireMapRegion()), 0), 5)`
+repeat (8) {
+  createUnitAtPosition(0, randPos(getEntireMapRegion()), getVariable('AI resources'), 'tree')
+}
+repeat (5) {
+  createUnitAtPosition('rock', getVariable('AI resources'), randPos(getEntireMapRegion()), 0)
+}`
     )
   })
   test('multiline actions with nested if', () => {
@@ -391,6 +398,35 @@ repeat(createUnitAtPosition('rock', getVariable('AI resources'), randPos(getEnti
                       function: 'getTriggeringUnit'
                     },
                     type: 'dropAllItems'
+                  },
+                  {
+                    else: [],
+                    then: [
+                      {
+                        type: 'spawnItem',
+                        itemType: 's2vnp9Ph2d',
+                        position: {
+                          function: 'getEntityPosition',
+                          entity: {
+                            function: 'getTriggeringUnit'
+                          }
+                        }
+                      }
+                    ],
+                    conditions: [
+                      {
+                        operator: '==',
+                        operandType: 'unitType'
+                      },
+                      {
+                        entity: {
+                          function: 'getTriggeringUnit'
+                        },
+                        function: 'getUnitTypeOfUnit'
+                      },
+                      'pig'
+                    ],
+                    type: 'condition'
                   }
                 ],
                 conditions: [
@@ -407,7 +443,7 @@ repeat(createUnitAtPosition('rock', getVariable('AI resources'), randPos(getEnti
                   'survivor'
                 ],
                 type: 'condition',
-                disabled: true
+                disabled: false
               },
               {
                 else: [],
@@ -437,36 +473,7 @@ repeat(createUnitAtPosition('rock', getVariable('AI resources'), randPos(getEnti
                   'bear'
                 ],
                 type: 'condition',
-                disabled: true
-              },
-              {
-                else: [],
-                then: [
-                  {
-                    type: 'spawnItem',
-                    itemType: 's2vnp9Ph2d',
-                    position: {
-                      function: 'getEntityPosition',
-                      entity: {
-                        function: 'getTriggeringUnit'
-                      }
-                    }
-                  }
-                ],
-                conditions: [
-                  {
-                    operator: '==',
-                    operandType: 'unitType'
-                  },
-                  {
-                    entity: {
-                      function: 'getTriggeringUnit'
-                    },
-                    function: 'getUnitTypeOfUnit'
-                  },
-                  'pig'
-                ],
-                type: 'condition'
+                disabled: false
               },
               {
                 type: 'destroyEntity',
@@ -502,19 +509,15 @@ if (getAttributeTypeOfAttribute(triggeringAttr) == 'health') {
     // start respawn timer (it goes from 0 to 100)
     setPlayerAttribute('respawnTimer', getOwner(triggeringUnit), 0)
     dropAllItems(triggeringUnit)
+    if (triggeringUnit.type == 'pig') {
+      spawnItem('s2vnp9Ph2d', getEntityPosition(triggeringUnit))
+    }
   }
-
   if (triggeringUnit.type == 'bear') {
     spawnItem('HBlfzHEdHP', getEntityPosition(triggeringUnit))
   }
-
-  if (triggeringUnit.type == 'pig') {
-    spawnItem('s2vnp9Ph2d', getEntityPosition(triggeringUnit))
-  }
-
   destroyEntity(triggeringUnit)
-}
-`
+}`
     )
   })
 })

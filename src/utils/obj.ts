@@ -22,6 +22,12 @@ interface conditionObject {
   comment: string
 }
 
+interface repeatObject {
+  type: 'repeat'
+  count: number,
+  actions: Array<Record<string, any>>
+}
+
 const inValidKey = [
   'function',
   'type',
@@ -71,6 +77,13 @@ const excludeFuncs = {
     const obj: Record<string, any> = o as Record<string, any>
     return `${typeof obj.entity === 'object' ? actionToString({ o: obj.entity, parentKey, defaultReturnType, gameData, indentation }) : obj.entity}.$${obj.attribute}`
   },
+  repeat: ({ o, defaultReturnType, gameData, parentKey, indentation = 0 }: actionTostringProps) => {
+    const obj = o as repeatObject
+    const nowIndentation = DEFAULTINDENTATION + indentation
+    return `repeat (${actionToString({ o: obj.count, defaultReturnType, gameData, parentKey, indentation: 0 })}) {
+${actionToString({ o: obj.actions, defaultReturnType, gameData, parentKey, indentation: nowIndentation })}
+${' '.repeat(indentation)}}`
+  },
   condition: ({ o, defaultReturnType, gameData, parentKey, indentation = 0 }: actionTostringProps) => {
     const obj = o as conditionObject
     const nowIndentation = DEFAULTINDENTATION + indentation
@@ -80,8 +93,7 @@ ${' '.repeat(indentation)}}${obj.else.length > 0
         ? ` else {
 ${actionToString({ o: obj.else, defaultReturnType, gameData, parentKey, indentation: nowIndentation })}
 ${' '.repeat(indentation)}}`
-        : ''}
-`
+        : ''}`
   }
 }
 
@@ -89,6 +101,9 @@ const addBracketsWhenNeeded = (obj: AnyObj, output: string): string => obj.brack
 
 export const actionToString = ({ o, parentKey, defaultReturnType, gameData, indentation = 0 }: actionTostringProps): string => {
   let output = ''
+  if (o === null || o === undefined) {
+    return output
+  }
   if ((o as Record<string, any>).comment !== undefined) {
     (o as Record<string, any>).comment.split('\n').forEach((comment: string) => {
       if (comment !== '') {
@@ -98,9 +113,6 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, inde
   }
   output += ' '.repeat(indentation)
 
-  if (o === null || o === undefined) {
-    return output
-  }
   if (Array.isArray(o) && o.every(o => typeof o === 'object' && !Array.isArray(o))) {
     return o.map(obj => {
       return actionToString({ o: obj, parentKey, defaultReturnType, gameData, indentation })
