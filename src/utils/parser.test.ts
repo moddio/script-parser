@@ -264,4 +264,89 @@ if  (getAttributeTypeOfAttribute(triggeringAttr) == 'respawnTimer')  {
 `
     )
   })
+  test('multiline actions with raw json data', () => {
+    expect(actionToString({
+      o: {
+        isProtected: true,
+        triggers: [
+          {
+            type: 'gameStart'
+          }
+        ],
+        actions: [
+          {
+            playerType: 'aiNeutral',
+            entity: {
+              variableName: 'AI neutral',
+              function: 'getVariable'
+            },
+            type: 'assignPlayerType'
+          },
+          {
+            playerType: 'aiHostile',
+            entity: {
+              variableName: 'AI hostile',
+              function: 'getVariable'
+            },
+            type: 'assignPlayerType'
+          },
+          {
+            type: 'repeat',
+            count: 8,
+            actions: [
+              {
+                angle: 0,
+                position: {
+                  region: {
+                    function: 'getEntireMapRegion'
+                  },
+                  function: 'getRandomPositionInRegion'
+                },
+                entity: {
+                  function: 'getVariable',
+                  variableName: 'AI resources'
+                },
+                unitType: 'tree',
+                type: 'createUnitAtPosition'
+              }
+            ]
+          },
+          {
+            actions: [
+              {
+                type: 'createUnitAtPosition',
+                unitType: 'rock',
+                entity: {
+                  function: 'getVariable',
+                  variableName: 'AI resources'
+                },
+                position: {
+                  function: 'getRandomPositionInRegion',
+                  region: {
+                    function: 'getEntireMapRegion'
+                  }
+                },
+                angle: 0
+              }
+            ],
+            count: 5,
+            type: 'repeat'
+          }
+        ],
+        name: 'initialize',
+        parent: null,
+        key: 'initialize',
+        order: -1
+      },
+      defaultReturnType: '',
+      gameData: tmpGameData,
+      parentKey: ''
+    })).toBe(
+      `@gameStart
+assignPlayerType('aiNeutral', getVariable('AI neutral'))
+assignPlayerType('aiHostile', getVariable('AI hostile'))
+repeat(8, createUnitAtPosition(0, randPos(getEntireMapRegion()), getVariable('AI resources'), 'tree'))
+repeat(createUnitAtPosition('rock', getVariable('AI resources'), randPos(getEntireMapRegion()), 0), 5)`
+    )
+  })
 })

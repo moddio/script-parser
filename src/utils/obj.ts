@@ -143,6 +143,12 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, inde
     AND: '&&',
     OR: '||'
   }
+
+  // for raw data json
+  if (obj.triggers !== undefined) {
+    obj.triggers.forEach((t: { type: string }) => { output += `@${t.type}\n` })
+    output += actionToString({ o: obj.actions, defaultReturnType, gameData, indentation, parentKey })
+  }
   // for comparison ,1 == 2
   if (obj[0] !== undefined && obj[0].operandType !== undefined) {
     let operator: string = obj[0].operator
