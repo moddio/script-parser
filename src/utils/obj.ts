@@ -5,7 +5,7 @@ import { type AnyObj } from '../types'
 
 interface actionTostringProps {
   // TODO: complete the type
-  o: any
+  o: Record<string, any> | Array<Record<string, any>> | number | boolean | string
   parentKey: string
   defaultReturnType: string
   gameData: { unitTypes?: AnyObj, scripts?: AnyObj }
@@ -14,6 +14,7 @@ interface actionTostringProps {
 
 const inValidKey = [
   'function',
+  'type',
   'items',
   'vars'
 ]
@@ -39,12 +40,24 @@ export const removeUnusedProperties = (obj: AnyObj): AnyObj => {
 }
 
 const excludeFuncs = {
-  concat: ({ o: obj, defaultReturnType, gameData, parentKey }: actionTostringProps) => `${actionToString({ o: obj.textA, defaultReturnType, gameData, parentKey })} + ${actionToString({ o: obj.textB, parentKey, defaultReturnType, gameData })}`,
-  getValueOfEntityVariable: ({ o: obj, defaultReturnType, gameData, parentKey }: actionTostringProps) => `${typeof obj.entity === 'object' ? actionToString({ o: obj.entity, parentKey, defaultReturnType, gameData }) : obj.entity}.${obj.variable?.variable?.key}`,
-  getValueOfPlayerVariable: ({ o: obj, defaultReturnType, gameData, parentKey }: actionTostringProps) => `${typeof obj.player === 'object' ? actionToString({ o: obj.player, parentKey, defaultReturnType, gameData }) : obj.player}.${obj.variable?.variable?.key}`,
-  getEntityVariable: ({ o: obj }: actionTostringProps) => obj.variable?.text,
-  getPlayerVariable: ({ o: obj }: actionTostringProps) => obj.variable?.text,
-  getEntityAttribute: ({ o: obj, defaultReturnType, gameData, parentKey }: actionTostringProps) => `${typeof obj.entity === 'object' ? actionToString({ o: obj.entity, parentKey, defaultReturnType, gameData }) : obj.entity}.$${obj.attribute}`
+  concat: ({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
+    const obj: Record<string, any> = o as Record<string, any>
+    return `${actionToString({ o: obj.textA, defaultReturnType, gameData, parentKey })} + ${actionToString({ o: obj.textB, parentKey, defaultReturnType, gameData })}`
+  },
+  getValueOfEntityVariable: ({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
+    const obj: Record<string, any> = o as Record<string, any>
+    return `${typeof obj.entity === 'object' ? actionToString({ o: obj.entity, parentKey, defaultReturnType, gameData }) : obj.entity}.${obj.variable?.variable?.key}`
+  },
+  getValueOfPlayerVariable: ({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
+    const obj: Record<string, any> = o as Record<string, any>
+    return `${typeof obj.player === 'object' ? actionToString({ o: obj.player, parentKey, defaultReturnType, gameData }) : obj.player}.${obj.variable?.variable?.key}`
+  },
+  getEntityVariable: ({ o: obj }: actionTostringProps) => (obj as Record<string, any>).variable?.text,
+  getPlayerVariable: ({ o: obj }: actionTostringProps) => (obj as Record<string, any>).variable?.text,
+  getEntityAttribute: ({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
+    const obj: Record<string, any> = o as Record<string, any>
+    return `${typeof obj.entity === 'object' ? actionToString({ o: obj.entity, parentKey, defaultReturnType, gameData }) : obj.entity}.$${obj.attribute}`
+  }
 }
 
 const addBracketsWhenNeeded = (obj: AnyObj, output: string): string => obj.brackets === true ? `(${output})` : output
@@ -54,6 +67,13 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData }: ac
   if (o === null || o === undefined) {
     return output
   }
+  if (Array.isArray(o) && o.every(o => typeof o === 'object' && !Array.isArray(o))) {
+    return o.map(obj => {
+      console.log(obj)
+      return actionToString({ o: obj, parentKey, defaultReturnType, gameData })
+    }).join('\n')
+  }
+
   switch (typeof o) {
     case 'string': {
       switch (defaultReturnType) {
@@ -126,38 +146,47 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData }: ac
   }
 
   // for normal action like pos(2, 2)
-  if (obj.function !== undefined) {
+  if (obj.function !== undefined || obj.type !== undefined) {
     let needBrackets = true
+    let needSemicolons = false
+    const fn: string = obj.function ?? obj.type
 
-    if (noBracketsFuncs.includes(obj.function)) {
+    if (noBracketsFuncs.includes(fn)) {
       needBrackets = false
     }
-    const convertFunc = excludeFuncs[obj.function as keyof typeof excludeFuncs]
+    const convertFunc = excludeFuncs[fn as keyof typeof excludeFuncs]
     if (convertFunc !== undefined) {
       output += convertFunc({ o: obj, parentKey, defaultReturnType, gameData })
     } else {
-      if (multiDefinedTable[aliasTable[obj.function as keyof typeof aliasTable] ?? obj.function] !== undefined) {
+      if (multiDefinedTable[aliasTable[fn as keyof typeof aliasTable] ?? fn] !== undefined) {
         for (let i = 0; i < keys.length; i++) {
           if (checkIsValid(keys[i])) {
+            if (needSemicolons) {
+              output += ', '
+              needSemicolons = false
+            }
             output += typeof obj[keys[i]] === 'object'
               ? actionToString({ o: obj[keys[i]], parentKey: keys[i], defaultReturnType, gameData })
               : typeof obj[keys[i]] === 'string' ? `'${obj[keys[i]]}'` : obj[keys[i]]
-          }
-          if (keys[i] !== 'function' || i === keys.length - 1) {
-            output += keys.length - 1 === i ? '' : ', '
+            needSemicolons = true
           }
         }
-        output += `.${aliasTable[obj.function as keyof typeof aliasTable] ?? obj.function}`
+        output += `.${aliasTable[fn as keyof typeof aliasTable] ?? fn}`
       } else {
-        output += `${aliasTable[obj.function as keyof typeof aliasTable] ?? obj.function}${needBrackets ? '(' : ''}`
+        output += `${aliasTable[fn as keyof typeof aliasTable] ?? fn}${needBrackets ? '(' : ''}`
         for (let i = 0; i < keys.length; i++) {
           if (checkIsValid(keys[i])) {
+            if (needSemicolons) {
+              output += ', '
+              needSemicolons = false
+            }
             output += typeof obj[keys[i]] === 'object'
               ? actionToString({ o: obj[keys[i]], parentKey: keys[i], defaultReturnType, gameData })
               : typeof obj[keys[i]] === 'string' ? `'${obj[keys[i]]}'` : obj[keys[i]]
+            needSemicolons = true
           }
-          if (keys[i] !== 'function' || i === keys.length - 1) {
-            output += keys.length - 1 === i ? needBrackets ? ')' : '' : ', '
+          if (needBrackets && i === keys.length - 1) {
+            output += ')'
           }
         }
       }
