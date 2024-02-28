@@ -253,13 +253,11 @@ repeat(createUnitAtPosition('rock', getVariable('AI resources'), randPos(getEnti
       `// respawn players
 // hope everything works fine
 // xD
-if  (getAttributeTypeOfAttribute(triggeringAttr) == 'respawnTimer')  {
+if (getAttributeTypeOfAttribute(triggeringAttr) == 'respawnTimer') {
   createUnitAtPosition('survivor', randPos(getEntireMapRegion()), triggeringPlayer, 0)
   playerCameraTrackUnit(triggeringPlayer, triggeringPlayer, lastCreatedUnit)
   // when a player leaves, destroy all units owned by that player
-  forAllUnits(allUnitsOwnedByPlayer(triggeringPlayer, triggeringPlayer), destroyEntity(selectedUnit()), 'when a player leaves, destroy all units owned by that player')
-} else {
-
+  forAllUnits(allUnitsOwnedByPlayer(triggeringPlayer, triggeringPlayer), destroyEntity(selectedUnit()))
 }
 `
     )
@@ -347,6 +345,176 @@ assignPlayerType('aiNeutral', getVariable('AI neutral'))
 assignPlayerType('aiHostile', getVariable('AI hostile'))
 repeat(8, createUnitAtPosition(0, randPos(getEntireMapRegion()), getVariable('AI resources'), 'tree'))
 repeat(createUnitAtPosition('rock', getVariable('AI resources'), randPos(getEntireMapRegion()), 0), 5)`
+    )
+  })
+  test('multiline actions with nested if', () => {
+    expect(actionToString({
+      o: {
+        order: 4,
+        key: 'unitDeath',
+        parent: null,
+        name: 'unit death',
+        actions: [
+          {
+            type: 'condition',
+            conditions: [
+              {
+                operandType: 'attributeType',
+                operator: '=='
+              },
+              {
+                function: 'getAttributeTypeOfAttribute',
+                entity: {
+                  function: 'getTriggeringAttribute'
+                }
+              },
+              'health'
+            ],
+            then: [
+              {
+                else: [],
+                then: [
+                  {
+                    comment: 'start respawn timer (it goes from 0 to 100)',
+                    type: 'setPlayerAttribute',
+                    attribute: 'respawnTimer',
+                    entity: {
+                      function: 'getOwner',
+                      entity: {
+                        function: 'getTriggeringUnit'
+                      }
+                    },
+                    value: 0
+                  },
+                  {
+                    entity: {
+                      function: 'getTriggeringUnit'
+                    },
+                    type: 'dropAllItems'
+                  }
+                ],
+                conditions: [
+                  {
+                    operator: '==',
+                    operandType: 'unitType'
+                  },
+                  {
+                    entity: {
+                      function: 'getTriggeringUnit'
+                    },
+                    function: 'getUnitTypeOfUnit'
+                  },
+                  'survivor'
+                ],
+                type: 'condition',
+                disabled: true
+              },
+              {
+                else: [],
+                then: [
+                  {
+                    type: 'spawnItem',
+                    itemType: 'HBlfzHEdHP',
+                    position: {
+                      function: 'getEntityPosition',
+                      entity: {
+                        function: 'getTriggeringUnit'
+                      }
+                    }
+                  }
+                ],
+                conditions: [
+                  {
+                    operator: '==',
+                    operandType: 'unitType'
+                  },
+                  {
+                    entity: {
+                      function: 'getTriggeringUnit'
+                    },
+                    function: 'getUnitTypeOfUnit'
+                  },
+                  'bear'
+                ],
+                type: 'condition',
+                disabled: true
+              },
+              {
+                else: [],
+                then: [
+                  {
+                    type: 'spawnItem',
+                    itemType: 's2vnp9Ph2d',
+                    position: {
+                      function: 'getEntityPosition',
+                      entity: {
+                        function: 'getTriggeringUnit'
+                      }
+                    }
+                  }
+                ],
+                conditions: [
+                  {
+                    operator: '==',
+                    operandType: 'unitType'
+                  },
+                  {
+                    entity: {
+                      function: 'getTriggeringUnit'
+                    },
+                    function: 'getUnitTypeOfUnit'
+                  },
+                  'pig'
+                ],
+                type: 'condition'
+              },
+              {
+                type: 'destroyEntity',
+                entity: {
+                  function: 'getTriggeringUnit'
+                }
+              }
+            ],
+            else: []
+          }
+        ],
+        conditions: [
+          {
+            operandType: 'boolean',
+            operator: '=='
+          },
+          true,
+          true
+        ],
+        triggers: [
+          {
+            type: 'unitAttributeBecomesZero'
+          }
+        ]
+      },
+      defaultReturnType: '',
+      gameData: tmpGameData,
+      parentKey: ''
+    })).toBe(
+      `@unitAttributeBecomesZero
+if (getAttributeTypeOfAttribute(triggeringAttr) == 'health') {
+  if (triggeringUnit.type == 'survivor') {
+    // start respawn timer (it goes from 0 to 100)
+    setPlayerAttribute('respawnTimer', getOwner(triggeringUnit), 0)
+    dropAllItems(triggeringUnit)
+  }
+
+  if (triggeringUnit.type == 'bear') {
+    spawnItem('HBlfzHEdHP', getEntityPosition(triggeringUnit))
+  }
+
+  if (triggeringUnit.type == 'pig') {
+    spawnItem('s2vnp9Ph2d', getEntityPosition(triggeringUnit))
+  }
+
+  destroyEntity(triggeringUnit)
+}
+`
     )
   })
 })
