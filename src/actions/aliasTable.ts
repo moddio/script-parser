@@ -59,5 +59,7 @@ export const aliasTable = {
   getLastAttackedUnit: 'lastAttackedUnit',
   getLastAttackingUnit: 'lastAttackingUnit',
   getLastChatMessageSentByPlayer: 'lastChatMessageSent',
-  getLastAttackingItem: 'lastAttackingItem'
+  getLastAttackingItem: 'lastAttackingItem',
+
+  condition: 'if'
 }

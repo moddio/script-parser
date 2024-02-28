@@ -175,4 +175,85 @@ repeat(8, createUnitAtPosition(0, randPos(getEntireMapRegion()), getVariable('AI
 repeat(createUnitAtPosition('rock', getVariable('AI resources'), randPos(getEntireMapRegion()), 0), 5)`
     )
   })
+  test('multiline actions', () => {
+    expect(actionToString({
+      o: [
+        {
+          type: 'condition',
+          conditions: [
+            {
+              operandType: 'attributeType',
+              operator: '=='
+            },
+            {
+              function: 'getAttributeTypeOfAttribute',
+              entity: {
+                function: 'getTriggeringAttribute'
+              }
+            },
+            'respawnTimer'
+          ],
+          then: [
+            {
+              type: 'createUnitAtPosition',
+              unitType: 'survivor',
+              position: {
+                region: {
+                  function: 'getEntireMapRegion'
+                },
+                function: 'getRandomPositionInRegion'
+              },
+              entity: {
+                function: 'getTriggeringPlayer'
+              },
+              angle: 0
+            },
+            {
+              player: {
+                function: 'getTriggeringPlayer'
+              },
+              type: 'playerCameraTrackUnit',
+              survivor: {
+                function: 'getTriggeringPlayer'
+              },
+              unit: {
+                function: 'getLastCreatedUnit'
+              }
+            },
+            {
+              type: 'forAllUnits',
+              unitGroup: {
+                player: {
+                  function: 'getTriggeringPlayer'
+                },
+                function: 'allUnitsOwnedByPlayer',
+                survivor: {
+                  function: 'getTriggeringPlayer'
+                }
+              },
+              actions: [
+                {
+                  entity: {
+                    function: 'selectedUnit'
+                  },
+                  type: 'destroyEntity'
+                }
+              ],
+              comment: 'when a player leaves, destroy all units owned by that player'
+            }
+          ],
+          else: [],
+          comment: 'respawn players'
+        }
+      ],
+      defaultReturnType: '',
+      gameData: tmpGameData,
+      parentKey: ''
+    })).toBe(
+      `assignPlayerType('aiNeutral', getVariable('AI neutral'))
+assignPlayerType('aiHostile', getVariable('AI hostile'))
+repeat(8, createUnitAtPosition(0, randPos(getEntireMapRegion()), getVariable('AI resources'), 'tree'))
+repeat(createUnitAtPosition('rock', getVariable('AI resources'), randPos(getEntireMapRegion()), 0), 5)`
+    )
+  })
 })

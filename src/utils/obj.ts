@@ -9,7 +9,16 @@ interface actionTostringProps {
   parentKey: string
   defaultReturnType: string
   gameData: { unitTypes?: AnyObj, scripts?: AnyObj }
+  indentation?: number
   nestedConditions?: boolean
+}
+
+interface conditionObject {
+  type: 'condition'
+  conditions: Array<Record<string, any>>
+  then: Array<Record<string, any>>
+  else: Array<Record<string, any>>
+  comment: string
 }
 
 const inValidKey = [
@@ -57,20 +66,30 @@ const excludeFuncs = {
   getEntityAttribute: ({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
     const obj: Record<string, any> = o as Record<string, any>
     return `${typeof obj.entity === 'object' ? actionToString({ o: obj.entity, parentKey, defaultReturnType, gameData }) : obj.entity}.$${obj.attribute}`
+  },
+  condition: ({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
+    const obj = o as conditionObject
+    return `// ${obj.comment}
+if  (${actionToString({ o: obj.conditions, defaultReturnType, gameData, parentKey })})  {
+${actionToString({ o: obj.then, defaultReturnType, gameData, parentKey, indentation: 2 })}
+} else {
+${actionToString({ o: obj.else, defaultReturnType, gameData, parentKey, indentation: 2 })}
+}
+`
   }
 }
 
 const addBracketsWhenNeeded = (obj: AnyObj, output: string): string => obj.brackets === true ? `(${output})` : output
 
-export const actionToString = ({ o, parentKey, defaultReturnType, gameData }: actionTostringProps): string => {
-  let output = ''
+export const actionToString = ({ o, parentKey, defaultReturnType, gameData, indentation }: actionTostringProps): string => {
+  let output = indentation !== undefined ? ' '.repeat(indentation) : ''
   if (o === null || o === undefined) {
     return output
   }
   if (Array.isArray(o) && o.every(o => typeof o === 'object' && !Array.isArray(o))) {
     return o.map(obj => {
       console.log(obj)
-      return actionToString({ o: obj, parentKey, defaultReturnType, gameData })
+      return actionToString({ o: obj, parentKey, defaultReturnType, gameData, indentation })
     }).join('\n')
   }
 
