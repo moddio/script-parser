@@ -175,7 +175,7 @@ repeat(8, createUnitAtPosition(0, randPos(getEntireMapRegion()), getVariable('AI
 repeat(createUnitAtPosition('rock', getVariable('AI resources'), randPos(getEntireMapRegion()), 0), 5)`
     )
   })
-  test('multiline actions', () => {
+  test('multiline actions with comments, if', () => {
     expect(actionToString({
       o: [
         {
@@ -243,7 +243,7 @@ repeat(createUnitAtPosition('rock', getVariable('AI resources'), randPos(getEnti
             }
           ],
           else: [],
-          comment: 'respawn players'
+          comment: 'respawn players\nhope everything works fine\nxD'
         }
       ],
       defaultReturnType: '',
@@ -251,9 +251,12 @@ repeat(createUnitAtPosition('rock', getVariable('AI resources'), randPos(getEnti
       parentKey: ''
     })).toBe(
       `// respawn players
+// hope everything works fine
+// xD
 if  (getAttributeTypeOfAttribute(triggeringAttr) == 'respawnTimer')  {
   createUnitAtPosition('survivor', randPos(getEntireMapRegion()), triggeringPlayer, 0)
   playerCameraTrackUnit(triggeringPlayer, triggeringPlayer, lastCreatedUnit)
+  // when a player leaves, destroy all units owned by that player
   forAllUnits(allUnitsOwnedByPlayer(triggeringPlayer, triggeringPlayer), destroyEntity(selectedUnit()), 'when a player leaves, destroy all units owned by that player')
 } else {
 

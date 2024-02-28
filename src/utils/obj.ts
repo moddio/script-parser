@@ -69,8 +69,7 @@ const excludeFuncs = {
   },
   condition: ({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
     const obj = o as conditionObject
-    return `// ${obj.comment}
-if  (${actionToString({ o: obj.conditions, defaultReturnType, gameData, parentKey })})  {
+    return `if  (${actionToString({ o: obj.conditions, defaultReturnType, gameData, parentKey })})  {
 ${actionToString({ o: obj.then, defaultReturnType, gameData, parentKey, indentation: 2 })}
 } else {
 ${actionToString({ o: obj.else, defaultReturnType, gameData, parentKey, indentation: 2 })}
@@ -82,13 +81,21 @@ ${actionToString({ o: obj.else, defaultReturnType, gameData, parentKey, indentat
 const addBracketsWhenNeeded = (obj: AnyObj, output: string): string => obj.brackets === true ? `(${output})` : output
 
 export const actionToString = ({ o, parentKey, defaultReturnType, gameData, indentation }: actionTostringProps): string => {
-  let output = indentation !== undefined ? ' '.repeat(indentation) : ''
+  let output = ''
+  if ((o as Record<string, any>).comment !== undefined) {
+    (o as Record<string, any>).comment.split('\n').forEach((comment: string) => {
+      output += `${indentation !== undefined ? ' '.repeat(indentation) : ''}// ${comment}\n`
+    })
+  }
+  if (indentation !== undefined) {
+    output += ' '.repeat(indentation)
+  }
+
   if (o === null || o === undefined) {
     return output
   }
   if (Array.isArray(o) && o.every(o => typeof o === 'object' && !Array.isArray(o))) {
     return o.map(obj => {
-      console.log(obj)
       return actionToString({ o: obj, parentKey, defaultReturnType, gameData, indentation })
     }).join('\n')
   }
@@ -136,7 +143,6 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, inde
     AND: '&&',
     OR: '||'
   }
-
   // for comparison ,1 == 2
   if (obj[0] !== undefined && obj[0].operandType !== undefined) {
     let operator: string = obj[0].operator
