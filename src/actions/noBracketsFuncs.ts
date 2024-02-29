@@ -32,5 +32,6 @@ export const noBracketsFuncs = [
   'getLastChatMessageSentByPlayer',
   'getLastAttackingItem',
   'lastReceivedPostResponse',
-  'lastUpdatedVariableName'
+  'lastUpdatedVariableName',
+  'selectedUnit'
 ]

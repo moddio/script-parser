@@ -72,6 +72,9 @@ describe('parser', () => {
       parentKey: ''
     })).toBe('lastAttackedUnit.owner')
   })
+  test('lastCreatedItem.owner', () => {
+    expect(parser.parse('lastCreatedItem.owner')).toMatchObject({ entity: { _returnType: 'item', function: 'getLastCreatedItem' }, function: 'getOwnerOfItem' })
+  })
   test('x.pos(y)', () => {
     expect(parser.parse('0.pos(1)')).toMatchObject({ _returnType: 'position', function: 'xyCoordinate', x: 0, y: 1 })
     expect(actionToString({
@@ -269,7 +272,7 @@ if (getAttributeTypeOfAttribute(triggeringAttr) == 'respawnTimer') {
   createUnitAtPosition('survivor', randPos(getEntireMapRegion()), triggeringPlayer, 0)
   playerCameraTrackUnit(triggeringPlayer, triggeringPlayer, lastCreatedUnit)
   // when a player leaves, destroy all units owned by that player
-  forAllUnits(allUnitsOwnedByPlayer(triggeringPlayer, triggeringPlayer), destroyEntity(selectedUnit()))
+  forAllUnits(allUnitsOwnedByPlayer(triggeringPlayer, triggeringPlayer), destroyEntity(selectedUnit))
 }`
     )
   })
