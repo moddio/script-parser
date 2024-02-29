@@ -79,6 +79,7 @@
 "]"                   return ']'
 "'"                   return "'"
 '"'                   return '"'
+'@'                   return '@'
 ".$"                  return '.$'
 "."                   return '.'
 <<EOF>>               return 'EOF'
@@ -246,7 +247,13 @@ e
       } else {
         throwError($NAME + " is undefined")
       }
-    };
+    }
+    | '@'NAME {
+      $$ = {
+        type: $NAME
+      }
+    }
+    ;
      
 //     | e '[' NAME ']'
 //     {$$ = attr[$NAME].apply(undefined,
