@@ -78,6 +78,10 @@ const excludeFuncs = {
     const obj: Record<string, any> = o as Record<string, any>
     return `${typeof obj.entity === 'object' ? actionToString({ o: obj.entity, parentKey, defaultReturnType, gameData }) : obj.entity}.$${obj.attribute}`
   },
+  impulse: ({ o, defaultReturnType, gameData, parentKey, indentation = 0, disabled }: actionTostringProps) => {
+    const obj = o as { x: Record<string, any> | number, y: Record<string, any> | number }
+    return `(${actionToString({ o: obj.x, defaultReturnType, gameData, parentKey, indentation, disabled })}, ${actionToString({ o: obj.y, defaultReturnType, gameData, parentKey, indentation, disabled })})`
+  },
   repeat: ({ o, defaultReturnType, gameData, parentKey, indentation = 0, disabled }: actionTostringProps) => {
     const obj = o as repeatObject
     const nowIndentation = DEFAULTINDENTATION + indentation
@@ -179,8 +183,8 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, inde
     let left = typeof obj[1] === 'object' ? actionToString({ o: obj[1], parentKey: operator, defaultReturnType, gameData }) : obj[1]
     let right = typeof obj[2] === 'object' ? actionToString({ o: obj[2], parentKey: operator, defaultReturnType, gameData }) : obj[2]
     // map AND, OR to '&&', '||'
-    left = typeof obj[1] === 'string' ? `'${left.replaceAll("'", "\\'")}}'` : left
-    right = typeof obj[2] === 'string' ? `'${right.replaceAll("'", "\\'")}}'` : right
+    left = typeof obj[1] === 'string' ? `'${left.replaceAll("'", "\\'")}'` : left
+    right = typeof obj[2] === 'string' ? `'${right.replaceAll("'", "\\'")}'` : right
     operator = operatorMap[operator as keyof typeof operatorMap] ?? operator
     output += `${left} ${operator} ${right}`
     return addBracketsWhenNeeded(obj, output)
@@ -221,8 +225,10 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, inde
               needSemicolons = false
             }
             output += typeof obj[keys[i]] === 'object'
-              ? actionToString({ o: obj[keys[i]], parentKey: keys[i], defaultReturnType, gameData })
-              : typeof obj[keys[i]] === 'string' ? `'${obj[keys[i]].replaceAll("'", "\\'")}}'` : obj[keys[i]]
+              ? excludeFuncs[keys[i] as keyof typeof excludeFuncs] !== undefined
+                ? excludeFuncs[keys[i] as keyof typeof excludeFuncs]({ o: obj[keys[i]], parentKey, defaultReturnType, gameData, indentation, disabled: isDisabled })
+                : actionToString({ o: obj[keys[i]], parentKey: keys[i], defaultReturnType, gameData })
+              : typeof obj[keys[i]] === 'string' ? `'${obj[keys[i]].replaceAll("'", "\\'")}'` : obj[keys[i]]
             needSemicolons = true
           }
         }
@@ -236,8 +242,10 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, inde
               needSemicolons = false
             }
             output += typeof obj[keys[i]] === 'object'
-              ? actionToString({ o: obj[keys[i]], parentKey: keys[i], defaultReturnType, gameData })
-              : typeof obj[keys[i]] === 'string' ? `'${obj[keys[i]].replaceAll("'", "\\'")}}'` : obj[keys[i]]
+              ? excludeFuncs[keys[i] as keyof typeof excludeFuncs] !== undefined
+                ? excludeFuncs[keys[i] as keyof typeof excludeFuncs]({ o: obj[keys[i]], parentKey, defaultReturnType, gameData, indentation, disabled: isDisabled })
+                : actionToString({ o: obj[keys[i]], parentKey: keys[i], defaultReturnType, gameData })
+              : typeof obj[keys[i]] === 'string' ? `'${obj[keys[i]].replaceAll("'", "\\'")}'` : obj[keys[i]]
             needSemicolons = true
           }
           if (needBrackets && i === keys.length - 1) {

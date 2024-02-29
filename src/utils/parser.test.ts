@@ -17,6 +17,31 @@ describe('parser', () => {
       parentKey: ''
     })).toBe('thisEntity.testVar4')
   })
+  test('applyImpulse', () => {
+    expect(actionToString({
+      o: {
+        type: 'applyImpulseOnEntityXY',
+        impulse: {
+          x: {
+            function: 'getRandomNumberBetween',
+            min: -25,
+            max: 25
+          },
+          y: {
+            function: 'getRandomNumberBetween',
+            min: -25,
+            max: 25
+          }
+        },
+        entity: {
+          function: 'getLastCreatedUnit'
+        }
+      },
+      defaultReturnType: '',
+      gameData: {},
+      parentKey: ''
+    })).toBe('applyImpulseOnEntityXY((randNumber(-25, 25), randNumber(-25, 25)), lastCreatedUnit)')
+  })
   test('1+1+"hello"', () => {
     expect(parser.parse('1+1+"hello"')).toMatchObject({ _returnType: 'string', function: 'concat', textA: { _returnType: 'string', function: 'concat', textA: 1, textB: 1 }, textB: 'hello' })
   })
@@ -45,7 +70,7 @@ describe('parser', () => {
       defaultReturnType: '',
       gameData: { unitTypes: {} },
       parentKey: ''
-    })).toBe('(1 + 1 ) + "hello"')
+    })).toBe("(1 + 1 ) + 'hello'")
   })
   test('thisEntity.$some_attr', () => {
     expect(parser.parse('thisEntity.$some_attr')).toMatchObject({ attribute: 'some_attr', entity: { _returnType: 'entity', function: 'thisEntity' }, function: 'getEntityAttribute' })
@@ -1443,7 +1468,7 @@ setEntityVariable(selectedUnit, temporaryNumber2, 0))
     sendChatMessageToPlayer('You cannot gamble at level 50!', lastSelectingDialogueOption)
   }
 } else {
-  sendChatMessageToPlayer('You don't have enough coins!', lastSelectingDialogueOption)
+  sendChatMessageToPlayer('You don\\'t have enough coins!', lastSelectingDialogueOption)
 }`
     )
   })
