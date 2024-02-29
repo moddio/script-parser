@@ -27,7 +27,6 @@ export const aliasTable = {
   unitsFacingAngle: 'facingAngle',
   getCurrentAmmoOfItem: 'currentAmmo',
   changeDescriptionOfItem: 'changeDesc',
-  getOwnerOfItem: 'owner',
   setFadingTextOfUnit: 'setFadingText',
   getSensorOfUnit: 'sensor',
   getPositionInFrontOfPosition: 'polarProjection',

@@ -12,5 +12,10 @@ export const multiDefinedTable: Record<string, Record<string, string>> = {
     unit: 'getUnitTypeOfUnit',
     player: 'playerTypeOfPlayer',
     unitTypeGroup: 'getRandomUnitTypeFromUnitTypeGroup'
+  },
+  owner: {
+    item: 'getOwnerOfItem',
+    unit: 'getOwner',
+    sensor: 'ownerUnitOfSensor'
   }
 }
