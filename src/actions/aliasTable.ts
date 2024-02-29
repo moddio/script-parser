@@ -6,11 +6,13 @@ export const aliasTable = {
   squareRoot: 'sqrt',
   getRandomItemTypeFromItemTypeGroup: 'randItemType',
   stringToNumber: 'str2num',
-  getPositionY: 'y', // 'posY' no need to define them specifically
+  getPositionY: 'y', // 'posY'
   getPositionX: 'x', // 'posX',
   getXCoordinateOfRegion: 'x', // 'regionX',
   getYCoordinateOfRegion: 'y', // 'regionY',
-
+  getOwnerOfItem: 'owner',
+  getOwner: 'owner',
+  ownerUnitOfSensor: 'owner',
   getItemTypeOfItem: 'type', // 'itemType',
   getUnitTypeOfUnit: 'type', // 'unitType',
   playerTypeOfPlayer: 'type', // 'playerType',

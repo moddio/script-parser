@@ -64,6 +64,14 @@ describe('parser', () => {
       parentKey: ''
     })).toBe('pos(0, 1).x')
   })
+  test('lastAttackedUnit.owner', () => {
+    expect(actionToString({
+      o: parser.parse('lastAttackedUnit.owner'),
+      defaultReturnType: '',
+      gameData: { unitTypes: {} },
+      parentKey: ''
+    })).toBe('lastAttackedUnit.owner')
+  })
   test('x.pos(y)', () => {
     expect(parser.parse('0.pos(1)')).toMatchObject({ _returnType: 'position', function: 'xyCoordinate', x: 0, y: 1 })
     expect(actionToString({
@@ -507,7 +515,7 @@ repeat (5) {
 if (getAttributeTypeOfAttribute(triggeringAttr) == 'health') {
   if (triggeringUnit.type == 'survivor') {
     // start respawn timer (it goes from 0 to 100)
-    setPlayerAttribute('respawnTimer', getOwner(triggeringUnit), 0)
+    setPlayerAttribute('respawnTimer', triggeringUnit.owner, 0)
     dropAllItems(triggeringUnit)
     if (triggeringUnit.type == 'pig') {
       spawnItem('s2vnp9Ph2d', getEntityPosition(triggeringUnit))
@@ -673,7 +681,7 @@ if (getAttributeTypeOfAttribute(triggeringAttr) == 'health') {
 if (getAttributeTypeOfAttribute(triggeringAttr) == 'health') {
 //   if (triggeringUnit.type == 'survivor') {
     // start respawn timer (it goes from 0 to 100)
-//     setPlayerAttribute('respawnTimer', getOwner(triggeringUnit), 0)
+//     setPlayerAttribute('respawnTimer', triggeringUnit.owner, 0)
 //     dropAllItems(triggeringUnit)
 //     if (triggeringUnit.type == 'pig') {
 //       spawnItem('s2vnp9Ph2d', getEntityPosition(triggeringUnit))
