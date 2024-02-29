@@ -1406,7 +1406,45 @@ if (getAttributeTypeOfAttribute(triggeringAttr) == 'health') {
       gameData: tmpGameData,
       parentKey: ''
     })).toBe(
-      ``
+      `// check if player has enough coins
+if (getPlayerAttribute('T1kJ3nfdAL', lastSelectingDialogueOption) >= 125) {
+  if (getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) != 50) {
+    forAllUnits(allUnitsOwnedByPlayer(lastSelectingDialogueOption), // set temporarynumber as level/4
+setEntityVariable(selectedUnit, temporaryNumber, getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) / 4 )
+if (selectedUnit.$efhpr4tQtt > 0) {
+  // decrease temporary number by 6
+  setEntityVariable(selectedUnit, temporaryNumber, getMax(-4, selectedUnit.temporaryNumber - 6 ))
+}
+if (getItemCurrentlyHeldByUnit(selectedUnit).type == 'ohz9BkTzY2' || getItemCurrentlyHeldByUnit(selectedUnit).type == 'rgrZ7CMGq3') {
+  // decrease temporary number by 3
+  setEntityVariable(selectedUnit, temporaryNumber, getMax(-4, selectedUnit.temporaryNumber - 4 ))
+}
+setEntityVariable(selectedUnit, temporaryNumber2, randNumber(1, 100))
+// apply gamble
+if (selectedUnit.temporaryNumber2 <= 5 + selectedUnit.temporaryNumber ) {
+  setPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption, getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) - 15 )
+  sendChatMessageToPlayer('You have lost 15 levels!', lastSelectingDialogueOption)
+} else {
+  if (selectedUnit.temporaryNumber2 <= 35 + selectedUnit.temporaryNumber ) {
+    setPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption, getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) - 1 )
+    sendChatMessageToPlayer('You have lost 1 level!', lastSelectingDialogueOption)
+  } else {
+    setPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption, getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) + 1 )
+    sendChatMessageToPlayer('You have won 1 level!', lastSelectingDialogueOption)
+  }
+}
+setEntityAttribute('QlfDWcbnOA', selectedUnit, 0)
+setEntityAttributeMax('QlfDWcbnOA', selectedUnit, floor((250 + 250 * pow(getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption), 2.157 + getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) / 50  ) )  / 250 ) * 250 )
+setPlayerAttribute('lu6W43aCJO', lastSelectingDialogueOption, 1 + (1 + getPlayerAttribute('tiBlLydQ87', lastSelectingDialogueOption) * 0.18 )  * getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) / 25   )
+setPlayerAttribute('T1kJ3nfdAL', lastSelectingDialogueOption, getPlayerAttribute('T1kJ3nfdAL', lastSelectingDialogueOption) - 125 )
+setEntityVariable(selectedUnit, temporaryNumber, 0)
+setEntityVariable(selectedUnit, temporaryNumber2, 0))
+  } else {
+    sendChatMessageToPlayer('You cannot gamble at level 50!', lastSelectingDialogueOption)
+  }
+} else {
+  sendChatMessageToPlayer('You don't have enough coins!', lastSelectingDialogueOption)
+}`
     )
   })
 })
