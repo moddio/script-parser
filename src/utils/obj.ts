@@ -143,7 +143,7 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, inde
           return returnVal
         }
         default: {
-          return `"${o}"`
+          return `'${o.replaceAll("'", "\\'")}'`
         }
       }
     }
@@ -179,8 +179,8 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, inde
     let left = typeof obj[1] === 'object' ? actionToString({ o: obj[1], parentKey: operator, defaultReturnType, gameData }) : obj[1]
     let right = typeof obj[2] === 'object' ? actionToString({ o: obj[2], parentKey: operator, defaultReturnType, gameData }) : obj[2]
     // map AND, OR to '&&', '||'
-    left = typeof obj[1] === 'string' ? `'${left}'` : left
-    right = typeof obj[2] === 'string' ? `'${right}'` : right
+    left = typeof obj[1] === 'string' ? `'${left.replaceAll("'", "\\'")}}'` : left
+    right = typeof obj[2] === 'string' ? `'${right.replaceAll("'", "\\'")}}'` : right
     operator = operatorMap[operator as keyof typeof operatorMap] ?? operator
     output += `${left} ${operator} ${right}`
     return addBracketsWhenNeeded(obj, output)
@@ -222,7 +222,7 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, inde
             }
             output += typeof obj[keys[i]] === 'object'
               ? actionToString({ o: obj[keys[i]], parentKey: keys[i], defaultReturnType, gameData })
-              : typeof obj[keys[i]] === 'string' ? `'${obj[keys[i]]}'` : obj[keys[i]]
+              : typeof obj[keys[i]] === 'string' ? `'${obj[keys[i]].replaceAll("'", "\\'")}}'` : obj[keys[i]]
             needSemicolons = true
           }
         }
@@ -237,7 +237,7 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, inde
             }
             output += typeof obj[keys[i]] === 'object'
               ? actionToString({ o: obj[keys[i]], parentKey: keys[i], defaultReturnType, gameData })
-              : typeof obj[keys[i]] === 'string' ? `'${obj[keys[i]]}'` : obj[keys[i]]
+              : typeof obj[keys[i]] === 'string' ? `'${obj[keys[i]].replaceAll("'", "\\'")}}'` : obj[keys[i]]
             needSemicolons = true
           }
           if (needBrackets && i === keys.length - 1) {
