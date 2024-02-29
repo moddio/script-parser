@@ -118,7 +118,7 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, inde
   }
   output += ' '.repeat(indentation)
 
-  if (Array.isArray(o) && o.every(o => typeof o === 'object' && !Array.isArray(o))) {
+  if (Array.isArray(o) && o.every(o => typeof o === 'object' && !Array.isArray(o)) && o[0]?.operator === undefined) {
     return o.map(obj => {
       return actionToString({ o: obj, parentKey, defaultReturnType, gameData, indentation, disabled: isDisabled })
     }).join('\n')

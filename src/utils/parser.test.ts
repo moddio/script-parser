@@ -697,4 +697,716 @@ if (getAttributeTypeOfAttribute(triggeringAttr) == 'health') {
 }`
     )
   })
+  test('multiline actions with nested if and disabled some', () => {
+    expect(actionToString({
+      o: {
+        triggers: [],
+        conditions: [
+          {
+            operator: '==',
+            operandType: 'boolean'
+          },
+          true,
+          true
+        ],
+        actions: [
+          {
+            type: 'condition',
+            conditions: [
+              {
+                operator: '>=',
+                operandType: 'number'
+              },
+              {
+                function: 'getPlayerAttribute',
+                attribute: 'T1kJ3nfdAL',
+                entity: {
+                  function: 'getLastPlayerSelectingDialogueOption'
+                }
+              },
+              125
+            ],
+            then: [
+              {
+                type: 'condition',
+                conditions: [
+                  {
+                    operator: '!=',
+                    operandType: 'number'
+                  },
+                  {
+                    function: 'getPlayerAttribute',
+                    attribute: 'qFGQRuEeKM',
+                    entity: {
+                      function: 'getLastPlayerSelectingDialogueOption'
+                    }
+                  },
+                  50
+                ],
+                then: [
+                  {
+                    type: 'forAllUnits',
+                    unitGroup: {
+                      function: 'allUnitsOwnedByPlayer',
+                      player: {
+                        function: 'getLastPlayerSelectingDialogueOption'
+                      }
+                    },
+                    actions: [
+                      {
+                        type: 'setEntityVariable',
+                        entity: {
+                          function: 'selectedUnit'
+                        },
+                        variable: {
+                          function: 'getEntityVariable',
+                          variable: {
+                            text: 'temporaryNumber',
+                            dataType: 'number',
+                            entity: 'fighter',
+                            key: 'temporaryNumber'
+                          }
+                        },
+                        value: {
+                          function: 'calculate',
+                          items: [
+                            {
+                              operator: '/'
+                            },
+                            {
+                              function: 'getPlayerAttribute',
+                              attribute: 'qFGQRuEeKM',
+                              entity: {
+                                function: 'getLastPlayerSelectingDialogueOption'
+                              }
+                            },
+                            4
+                          ]
+                        },
+                        comment: 'set temporarynumber as level/4'
+                      },
+                      {
+                        type: 'condition',
+                        conditions: [
+                          {
+                            operator: '>',
+                            operandType: 'number'
+                          },
+                          {
+                            function: 'getEntityAttribute',
+                            attribute: 'efhpr4tQtt',
+                            entity: {
+                              function: 'selectedUnit'
+                            }
+                          },
+                          0
+                        ],
+                        then: [
+                          {
+                            type: 'setEntityVariable',
+                            entity: {
+                              function: 'selectedUnit'
+                            },
+                            variable: {
+                              function: 'getEntityVariable',
+                              variable: {
+                                text: 'temporaryNumber',
+                                dataType: 'number',
+                                entity: 'fighter',
+                                key: 'temporaryNumber'
+                              }
+                            },
+                            value: {
+                              function: 'getMax',
+                              num1: -4,
+                              num2: {
+                                function: 'calculate',
+                                items: [
+                                  {
+                                    operator: '-'
+                                  },
+                                  {
+                                    function: 'getValueOfEntityVariable',
+                                    variable: {
+                                      function: 'getEntityVariable',
+                                      variable: {
+                                        text: 'temporaryNumber',
+                                        dataType: 'number',
+                                        entity: 'fighter',
+                                        key: 'temporaryNumber'
+                                      }
+                                    },
+                                    entity: {
+                                      function: 'selectedUnit'
+                                    }
+                                  },
+                                  6
+                                ]
+                              }
+                            },
+                            comment: 'decrease temporary number by 6'
+                          }
+                        ],
+                        else: []
+                      },
+                      {
+                        type: 'condition',
+                        conditions: [
+                          {
+                            operator: 'OR',
+                            operandType: 'or'
+                          },
+                          [
+                            {
+                              operandType: 'itemType',
+                              operator: '=='
+                            },
+                            {
+                              function: 'getItemTypeOfItem',
+                              entity: {
+                                function: 'getItemCurrentlyHeldByUnit',
+                                entity: {
+                                  function: 'selectedUnit'
+                                }
+                              }
+                            },
+                            'ohz9BkTzY2'
+                          ],
+                          [
+                            {
+                              operandType: 'itemType',
+                              operator: '=='
+                            },
+                            {
+                              function: 'getItemTypeOfItem',
+                              entity: {
+                                function: 'getItemCurrentlyHeldByUnit',
+                                entity: {
+                                  function: 'selectedUnit'
+                                }
+                              }
+                            },
+                            'rgrZ7CMGq3'
+                          ]
+                        ],
+                        then: [
+                          {
+                            type: 'setEntityVariable',
+                            entity: {
+                              function: 'selectedUnit'
+                            },
+                            variable: {
+                              function: 'getEntityVariable',
+                              variable: {
+                                text: 'temporaryNumber',
+                                dataType: 'number',
+                                entity: 'fighter',
+                                key: 'temporaryNumber'
+                              }
+                            },
+                            value: {
+                              function: 'getMax',
+                              num1: -4,
+                              num2: {
+                                function: 'calculate',
+                                items: [
+                                  {
+                                    operator: '-'
+                                  },
+                                  {
+                                    function: 'getValueOfEntityVariable',
+                                    variable: {
+                                      function: 'getEntityVariable',
+                                      variable: {
+                                        text: 'temporaryNumber',
+                                        dataType: 'number',
+                                        entity: 'fighter',
+                                        key: 'temporaryNumber'
+                                      }
+                                    },
+                                    entity: {
+                                      function: 'selectedUnit'
+                                    }
+                                  },
+                                  4
+                                ]
+                              }
+                            },
+                            comment: 'decrease temporary number by 3'
+                          }
+                        ],
+                        else: []
+                      },
+                      {
+                        type: 'setEntityVariable',
+                        entity: {
+                          function: 'selectedUnit'
+                        },
+                        variable: {
+                          function: 'getEntityVariable',
+                          variable: {
+                            text: 'temporaryNumber2',
+                            dataType: 'number',
+                            entity: 'fighter',
+                            key: 'temporaryNumber2'
+                          }
+                        },
+                        value: {
+                          function: 'getRandomNumberBetween',
+                          min: 1,
+                          max: 100
+                        },
+                        comment: ''
+                      },
+                      {
+                        type: 'condition',
+                        conditions: [
+                          {
+                            operator: '<=',
+                            operandType: 'number'
+                          },
+                          {
+                            function: 'getValueOfEntityVariable',
+                            variable: {
+                              function: 'getEntityVariable',
+                              variable: {
+                                text: 'temporaryNumber2',
+                                dataType: 'number',
+                                entity: 'fighter',
+                                key: 'temporaryNumber2'
+                              }
+                            },
+                            entity: {
+                              function: 'selectedUnit'
+                            }
+                          },
+                          {
+                            function: 'calculate',
+                            items: [
+                              {
+                                operator: '+'
+                              },
+                              5,
+                              {
+                                function: 'getValueOfEntityVariable',
+                                variable: {
+                                  function: 'getEntityVariable',
+                                  variable: {
+                                    text: 'temporaryNumber',
+                                    dataType: 'number',
+                                    entity: 'fighter',
+                                    key: 'temporaryNumber'
+                                  }
+                                },
+                                entity: {
+                                  function: 'selectedUnit'
+                                }
+                              }
+                            ]
+                          }
+                        ],
+                        then: [
+                          {
+                            type: 'setPlayerAttribute',
+                            attribute: 'qFGQRuEeKM',
+                            entity: {
+                              function: 'getLastPlayerSelectingDialogueOption'
+                            },
+                            value: {
+                              function: 'calculate',
+                              items: [
+                                {
+                                  operator: '-'
+                                },
+                                {
+                                  function: 'getPlayerAttribute',
+                                  attribute: 'qFGQRuEeKM',
+                                  entity: {
+                                    function: 'getLastPlayerSelectingDialogueOption'
+                                  }
+                                },
+                                15
+                              ]
+                            },
+                            disabled: false
+                          },
+                          {
+                            type: 'sendChatMessageToPlayer',
+                            message: 'You have lost 15 levels!',
+                            player: {
+                              function: 'getLastPlayerSelectingDialogueOption'
+                            }
+                          }
+                        ],
+                        else: [
+                          {
+                            type: 'condition',
+                            conditions: [
+                              {
+                                operator: '<=',
+                                operandType: 'number'
+                              },
+                              {
+                                function: 'getValueOfEntityVariable',
+                                variable: {
+                                  function: 'getEntityVariable',
+                                  variable: {
+                                    text: 'temporaryNumber2',
+                                    dataType: 'number',
+                                    entity: 'fighter',
+                                    key: 'temporaryNumber2'
+                                  }
+                                },
+                                entity: {
+                                  function: 'selectedUnit'
+                                }
+                              },
+                              {
+                                function: 'calculate',
+                                items: [
+                                  {
+                                    operator: '+'
+                                  },
+                                  35,
+                                  {
+                                    function: 'getValueOfEntityVariable',
+                                    variable: {
+                                      function: 'getEntityVariable',
+                                      variable: {
+                                        text: 'temporaryNumber',
+                                        dataType: 'number',
+                                        entity: 'fighter',
+                                        key: 'temporaryNumber'
+                                      }
+                                    },
+                                    entity: {
+                                      function: 'selectedUnit'
+                                    }
+                                  }
+                                ]
+                              }
+                            ],
+                            then: [
+                              {
+                                type: 'setPlayerAttribute',
+                                attribute: 'qFGQRuEeKM',
+                                entity: {
+                                  function: 'getLastPlayerSelectingDialogueOption'
+                                },
+                                value: {
+                                  function: 'calculate',
+                                  items: [
+                                    {
+                                      operator: '-'
+                                    },
+                                    {
+                                      function: 'getPlayerAttribute',
+                                      attribute: 'qFGQRuEeKM',
+                                      entity: {
+                                        function: 'getLastPlayerSelectingDialogueOption'
+                                      }
+                                    },
+                                    1
+                                  ]
+                                },
+                                disabled: false
+                              },
+                              {
+                                type: 'sendChatMessageToPlayer',
+                                message: 'You have lost 1 level!',
+                                player: {
+                                  function: 'getLastPlayerSelectingDialogueOption'
+                                }
+                              }
+                            ],
+                            else: [
+                              {
+                                type: 'setPlayerAttribute',
+                                attribute: 'qFGQRuEeKM',
+                                entity: {
+                                  function: 'getLastPlayerSelectingDialogueOption'
+                                },
+                                value: {
+                                  function: 'calculate',
+                                  items: [
+                                    {
+                                      operator: '+'
+                                    },
+                                    {
+                                      function: 'getPlayerAttribute',
+                                      attribute: 'qFGQRuEeKM',
+                                      entity: {
+                                        function: 'getLastPlayerSelectingDialogueOption'
+                                      }
+                                    },
+                                    1
+                                  ]
+                                },
+                                comment: '',
+                                disabled: false
+                              },
+                              {
+                                type: 'sendChatMessageToPlayer',
+                                message: 'You have won 1 level!',
+                                player: {
+                                  function: 'getLastPlayerSelectingDialogueOption'
+                                }
+                              }
+                            ],
+                            comment: ''
+                          }
+                        ],
+                        disabled: false,
+                        comment: 'apply gamble'
+                      },
+                      {
+                        type: 'setEntityAttribute',
+                        attribute: 'QlfDWcbnOA',
+                        entity: {
+                          function: 'selectedUnit'
+                        },
+                        value: 0
+                      },
+                      {
+                        type: 'setEntityAttributeMax',
+                        attribute: 'QlfDWcbnOA',
+                        entity: {
+                          function: 'selectedUnit'
+                        },
+                        value: {
+                          function: 'calculate',
+                          items: [
+                            {
+                              operator: '*'
+                            },
+                            {
+                              function: 'mathFloor',
+                              value: {
+                                function: 'calculate',
+                                items: [
+                                  {
+                                    operator: '/'
+                                  },
+                                  {
+                                    function: 'calculate',
+                                    items: [
+                                      {
+                                        operator: '+'
+                                      },
+                                      250,
+                                      {
+                                        function: 'calculate',
+                                        items: [
+                                          {
+                                            operator: '*'
+                                          },
+                                          250,
+                                          {
+                                            function: 'getExponent',
+                                            base: {
+                                              function: 'getPlayerAttribute',
+                                              attribute: 'qFGQRuEeKM',
+                                              entity: {
+                                                function: 'getLastPlayerSelectingDialogueOption'
+                                              }
+                                            },
+                                            power: {
+                                              function: 'calculate',
+                                              items: [
+                                                {
+                                                  operator: '+'
+                                                },
+                                                2.157,
+                                                {
+                                                  function: 'calculate',
+                                                  items: [
+                                                    {
+                                                      operator: '/'
+                                                    },
+                                                    {
+                                                      function: 'getPlayerAttribute',
+                                                      attribute: 'qFGQRuEeKM',
+                                                      entity: {
+                                                        function: 'getLastPlayerSelectingDialogueOption'
+                                                      }
+                                                    },
+                                                    50
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  250
+                                ]
+                              }
+                            },
+                            250
+                          ]
+                        }
+                      },
+                      {
+                        type: 'setPlayerAttribute',
+                        attribute: 'lu6W43aCJO',
+                        entity: {
+                          function: 'getLastPlayerSelectingDialogueOption'
+                        },
+                        value: {
+                          function: 'calculate',
+                          items: [
+                            {
+                              operator: '+'
+                            },
+                            1,
+                            {
+                              function: 'calculate',
+                              items: [
+                                {
+                                  operator: '*'
+                                },
+                                {
+                                  function: 'calculate',
+                                  items: [
+                                    {
+                                      operator: '+'
+                                    },
+                                    1,
+                                    {
+                                      function: 'calculate',
+                                      items: [
+                                        {
+                                          operator: '*'
+                                        },
+                                        {
+                                          function: 'getPlayerAttribute',
+                                          attribute: 'tiBlLydQ87',
+                                          entity: {
+                                            function: 'getLastPlayerSelectingDialogueOption'
+                                          }
+                                        },
+                                        0.18
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  function: 'calculate',
+                                  items: [
+                                    {
+                                      operator: '/'
+                                    },
+                                    {
+                                      function: 'getPlayerAttribute',
+                                      attribute: 'qFGQRuEeKM',
+                                      entity: {
+                                        function: 'getLastPlayerSelectingDialogueOption'
+                                      }
+                                    },
+                                    25
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        type: 'setPlayerAttribute',
+                        attribute: 'T1kJ3nfdAL',
+                        entity: {
+                          function: 'getLastPlayerSelectingDialogueOption'
+                        },
+                        value: {
+                          function: 'calculate',
+                          items: [
+                            {
+                              operator: '-'
+                            },
+                            {
+                              function: 'getPlayerAttribute',
+                              attribute: 'T1kJ3nfdAL',
+                              entity: {
+                                function: 'getLastPlayerSelectingDialogueOption'
+                              }
+                            },
+                            125
+                          ]
+                        }
+                      },
+                      {
+                        type: 'setEntityVariable',
+                        entity: {
+                          function: 'selectedUnit'
+                        },
+                        variable: {
+                          function: 'getEntityVariable',
+                          variable: {
+                            text: 'temporaryNumber',
+                            dataType: 'number',
+                            entity: 'fighter',
+                            key: 'temporaryNumber'
+                          }
+                        },
+                        value: 0,
+                        comment: ''
+                      },
+                      {
+                        type: 'setEntityVariable',
+                        entity: {
+                          function: 'selectedUnit'
+                        },
+                        variable: {
+                          function: 'getEntityVariable',
+                          variable: {
+                            text: 'temporaryNumber2',
+                            dataType: 'number',
+                            entity: 'fighter',
+                            key: 'temporaryNumber2'
+                          }
+                        },
+                        value: 0,
+                        comment: ''
+                      }
+                    ],
+                    comment: ''
+                  }
+                ],
+                else: [
+                  {
+                    type: 'sendChatMessageToPlayer',
+                    message: 'You cannot gamble at level 50!',
+                    player: {
+                      function: 'getLastPlayerSelectingDialogueOption'
+                    }
+                  }
+                ]
+              }
+            ],
+            else: [
+              {
+                type: 'sendChatMessageToPlayer',
+                message: "You don't have enough coins!",
+                player: {
+                  function: 'getLastPlayerSelectingDialogueOption'
+                }
+              }
+            ],
+            comment: 'check if player has enough coins'
+          }
+        ],
+        name: 'gambling pedestal',
+        parent: 'XA6g0NzDOq',
+        key: 'nmNzIESdzO',
+        order: 2
+      },
+      defaultReturnType: '',
+      gameData: tmpGameData,
+      parentKey: ''
+    })).toBe(
+      ``
+    )
+  })
 })
