@@ -193,8 +193,10 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, inde
   // for calc, e.g 1 + 1, 1 ^ 2
   if (obj.items !== undefined) {
     const operator = obj.items[0].operator ?? obj.items[0]
-    const left = typeof obj.items[1] === 'object' ? actionToString({ o: obj.items[1], parentKey: operator, defaultReturnType, gameData }) : obj.items[1]
-    const right = typeof obj.items[2] === 'object' ? actionToString({ o: obj.items[2], parentKey: operator, defaultReturnType, gameData }) : obj.items[2]
+    let left = typeof obj.items[1] === 'object' ? actionToString({ o: obj.items[1], parentKey: operator, defaultReturnType, gameData }) : obj.items[1]
+    let right = typeof obj.items[2] === 'object' ? actionToString({ o: obj.items[2], parentKey: operator, defaultReturnType, gameData }) : obj.items[2]
+    left = typeof obj[1] === 'string' ? `'${left.replaceAll("'", "\\'")}'` : left
+    right = typeof obj[2] === 'string' ? `'${right.replaceAll("'", "\\'")}'` : right
     if ((obj.items[0].operator === '*' || obj.items[0] === '*') && right === -1) {
       output += `- ${left} `
     } else {

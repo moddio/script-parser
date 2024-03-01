@@ -100,6 +100,15 @@ describe('parser', () => {
   test('lastCreatedItem.owner', () => {
     expect(parser.parse('lastCreatedItem.owner')).toMatchObject({ entity: { _returnType: 'item', function: 'getLastCreatedItem' }, function: 'getOwnerOfItem' })
   })
+  test('sendChatMessage', () => {
+    expect(parser.parse('sendChatMessage("hello" + "moddio")')).toMatchObject({ _returnType: 'ui', function: 'sendChatMessage', message: { _returnType: 'string', function: 'concat', textA: 'hello', textB: 'moddio' } })
+    expect(actionToString({
+      o: parser.parse('sendChatMessage("hello" + "moddio")'),
+      defaultReturnType: '',
+      gameData: { unitTypes: {} },
+      parentKey: ''
+    })).toBe("sendChatMessage('hello' + 'moddio')")
+  })
   test('x.pos(y)', () => {
     expect(parser.parse('0.pos(1)')).toMatchObject({ _returnType: 'position', function: 'xyCoordinate', x: 0, y: 1 })
     expect(actionToString({
