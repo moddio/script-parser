@@ -9,6 +9,7 @@ describe('parser', () => {
   })
 
   test('pos( 2+2, 2+2)', () => { expect(parser.parse('pos(2+2, 2+2)')).toMatchObject({ _returnType: 'position', function: 'xyCoordinate', x: { _returnType: 'number', function: 'calculate', items: [{ operator: '+' }, 2, 2] }, y: { _returnType: 'number', function: 'calculate', items: [{ operator: '+' }, 2, 2] } }) })
+  test('if ( 1 > 2)', () => { expect(parser.parse('if (1 > 2)')).toMatchObject({ _returnType: 'system', conditions: [{ operandType: 'number', operator: '>' }, 1, 2], function: 'condition' }) })
   test('thisEntity.testVar4', () => {
     expect(actionToString({
       o: parser.parse('thisEntity.testVar4'),
