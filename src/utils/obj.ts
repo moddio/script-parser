@@ -80,12 +80,108 @@ const excludeFuncs = {
   },
   impulse: ({ o, defaultReturnType, gameData, parentKey, indentation = 0, disabled }: actionTostringProps) => {
     const obj = o as { x: Record<string, any> | number, y: Record<string, any> | number }
-    return `(${actionToString({ o: obj.x, defaultReturnType, gameData, parentKey, indentation, disabled })}, ${actionToString({ o: obj.y, defaultReturnType, gameData, parentKey, indentation, disabled })})`
+    return `pos(${actionToString({ o: obj.x, defaultReturnType, gameData, parentKey, indentation, disabled })}, ${actionToString({ o: obj.y, defaultReturnType, gameData, parentKey, indentation, disabled })})`
   },
   repeat: ({ o, defaultReturnType, gameData, parentKey, indentation = 0, disabled }: actionTostringProps) => {
     const obj = o as repeatObject
     const nowIndentation = DEFAULTINDENTATION + indentation
     return `repeat (${actionToString({ o: obj.count, defaultReturnType, gameData, parentKey, indentation: 0 })}) {
+${actionToString({ o: obj.actions, defaultReturnType, gameData, parentKey, indentation: nowIndentation, disabled })}
+${disabled === true ? '// ' : ''}${' '.repeat(indentation)}}`
+  },
+  forAllItems: ({ o, defaultReturnType, gameData, parentKey, indentation = 0, disabled }: actionTostringProps) => {
+    //TODO: complete the type
+    const obj = o as any
+    const nowIndentation = DEFAULTINDENTATION + indentation
+    return `forAllItems (${actionToString({ o: obj.itemGroup, defaultReturnType, gameData, parentKey, indentation: 0 })}) {
+${actionToString({ o: obj.actions, defaultReturnType, gameData, parentKey, indentation: nowIndentation, disabled })}
+${disabled === true ? '// ' : ''}${' '.repeat(indentation)}}`
+  },
+  while: ({ o, defaultReturnType, gameData, parentKey, indentation = 0, disabled }: actionTostringProps) => {
+    //TODO: complete the type
+    const obj = o as any
+    const nowIndentation = DEFAULTINDENTATION + indentation
+    return `while (${actionToString({ o: obj.conditions, defaultReturnType, gameData, parentKey, indentation: 0 })}) {
+${actionToString({ o: obj.actions, defaultReturnType, gameData, parentKey, indentation: nowIndentation, disabled })}
+${disabled === true ? '// ' : ''}${' '.repeat(indentation)}}`
+  },
+  forAllEntities: ({ o, defaultReturnType, gameData, parentKey, indentation = 0, disabled }: actionTostringProps) => {
+    //TODO: complete the type
+    const obj = o as any
+    const nowIndentation = DEFAULTINDENTATION + indentation
+    return `forAllEntities (${actionToString({ o: obj.entityGroup, defaultReturnType, gameData, parentKey, indentation: 0 })}) {
+${actionToString({ o: obj.actions, defaultReturnType, gameData, parentKey, indentation: nowIndentation, disabled })}
+${disabled === true ? '// ' : ''}${' '.repeat(indentation)}}`
+  },
+  forAllItemTypes: ({ o, defaultReturnType, gameData, parentKey, indentation = 0, disabled }: actionTostringProps) => {
+    //TODO: complete the type
+    const obj = o as any
+    const nowIndentation = DEFAULTINDENTATION + indentation
+    return `forAllItemTypes (${actionToString({ o: obj.itemTypeGroup, defaultReturnType, gameData, parentKey, indentation: 0 })}) {
+${actionToString({ o: obj.actions, defaultReturnType, gameData, parentKey, indentation: nowIndentation, disabled })}
+${disabled === true ? '// ' : ''}${' '.repeat(indentation)}}`
+  },
+  forAllProjectiles: ({ o, defaultReturnType, gameData, parentKey, indentation = 0, disabled }: actionTostringProps) => {
+    //TODO: complete the type
+    const obj = o as any
+    const nowIndentation = DEFAULTINDENTATION + indentation
+    return `forAllProjectiles (${actionToString({ o: obj.projectileGroup, defaultReturnType, gameData, parentKey, indentation: 0 })}) {
+${actionToString({ o: obj.actions, defaultReturnType, gameData, parentKey, indentation: nowIndentation, disabled })}
+${disabled === true ? '// ' : ''}${' '.repeat(indentation)}}`
+  },
+  forAllRegions: ({ o, defaultReturnType, gameData, parentKey, indentation = 0, disabled }: actionTostringProps) => {
+    //TODO: complete the type
+    const obj = o as any
+    const nowIndentation = DEFAULTINDENTATION + indentation
+    return `forAllRegions (${actionToString({ o: obj.regionGroup, defaultReturnType, gameData, parentKey, indentation: 0 })}) {
+${actionToString({ o: obj.actions, defaultReturnType, gameData, parentKey, indentation: nowIndentation, disabled })}
+${disabled === true ? '// ' : ''}${' '.repeat(indentation)}}`
+  },
+  forAllUnitTypes: ({ o, defaultReturnType, gameData, parentKey, indentation = 0, disabled }: actionTostringProps) => {
+    //TODO: complete the type
+    const obj = o as any
+    const nowIndentation = DEFAULTINDENTATION + indentation
+    return `forAllUnitTypes (${actionToString({ o: obj.unitTypeGroup, defaultReturnType, gameData, parentKey, indentation: 0 })}) {
+${actionToString({ o: obj.actions, defaultReturnType, gameData, parentKey, indentation: nowIndentation, disabled })}
+${disabled === true ? '// ' : ''}${' '.repeat(indentation)}}`
+  },
+  forAllPlayers: ({ o, defaultReturnType, gameData, parentKey, indentation = 0, disabled }: actionTostringProps) => {
+    //TODO: complete the type
+    const obj = o as any
+    const nowIndentation = DEFAULTINDENTATION + indentation
+    return `forAllPlayers (${actionToString({ o: obj.playerGroup, defaultReturnType, gameData, parentKey, indentation: 0 })}) {
+${actionToString({ o: obj.actions, defaultReturnType, gameData, parentKey, indentation: nowIndentation, disabled })}
+${disabled === true ? '// ' : ''}${' '.repeat(indentation)}}`
+  },
+  for: ({ o, defaultReturnType, gameData, parentKey, indentation = 0, disabled }: actionTostringProps) => {
+    //TODO: complete the type
+    const obj = o as any
+    const nowIndentation = DEFAULTINDENTATION + indentation
+    return `for (${actionToString({ o: obj.variableName, defaultReturnType, gameData, parentKey, indentation: 0 })}, ${actionToString({ o: obj.start, defaultReturnType, gameData, parentKey, indentation: 0 })}, ${actionToString({ o: obj.stop, defaultReturnType, gameData, parentKey, indentation: 0 })}) {
+${actionToString({ o: obj.actions, defaultReturnType, gameData, parentKey, indentation: nowIndentation, disabled })}
+${disabled === true ? '// ' : ''}${' '.repeat(indentation)}}`
+  },
+  forAllDebris: ({ o, defaultReturnType, gameData, parentKey, indentation = 0, disabled }: actionTostringProps) => {
+    //TODO: complete the type
+    const obj = o as any
+    const nowIndentation = DEFAULTINDENTATION + indentation
+    return `forAllDebris (${actionToString({ o: obj.debrisGroup, defaultReturnType, gameData, parentKey, indentation: 0 })}) {
+${actionToString({ o: obj.actions, defaultReturnType, gameData, parentKey, indentation: nowIndentation, disabled })}
+${disabled === true ? '// ' : ''}${' '.repeat(indentation)}}`
+  },
+  forAllUnits: ({ o, defaultReturnType, gameData, parentKey, indentation = 0, disabled }: actionTostringProps) => {
+    //TODO: complete the type
+    const obj = o as any
+    const nowIndentation = DEFAULTINDENTATION + indentation
+    return `forAllUnits (${actionToString({ o: obj.unitGroup, defaultReturnType, gameData, parentKey, indentation: 0 })}) {
+${actionToString({ o: obj.actions, defaultReturnType, gameData, parentKey, indentation: nowIndentation, disabled })}
+${disabled === true ? '// ' : ''}${' '.repeat(indentation)}}`
+  },
+  forIn: ({ o, defaultReturnType, gameData, parentKey, indentation = 0, disabled }: actionTostringProps) => {
+    //TODO: complete the type
+    const obj = o as any
+    const nowIndentation = DEFAULTINDENTATION + indentation
+    return `forIn (${actionToString({ o: obj.variableNameMain, defaultReturnType, gameData, parentKey, indentation: 0 })}, ${actionToString({ o: obj.variableNameSource, defaultReturnType, gameData, parentKey, indentation: 0 })}) {
 ${actionToString({ o: obj.actions, defaultReturnType, gameData, parentKey, indentation: nowIndentation, disabled })}
 ${disabled === true ? '// ' : ''}${' '.repeat(indentation)}}`
   },
