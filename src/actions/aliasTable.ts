@@ -3,6 +3,7 @@ export const aliasTable = {
   xyCoordinate: 'pos',
   dynamicRegion: 'region',
   mathFloor: 'floor',
+  mathCeiling: 'ceil',
   squareRoot: 'sqrt',
   getRandomItemTypeFromItemTypeGroup: 'randItemType',
   stringToNumber: 'str2num',
