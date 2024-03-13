@@ -81,8 +81,10 @@
 "'"                   return "'"
 '"'                   return '"'
 '@'                   return '@'
+'#'                   return '#'
 ".$"                  return '.$'
 "."                   return '.'
+"="                   return '='
 <<EOF>>               return 'EOF'
 
 /lex
@@ -247,6 +249,39 @@ e
         }
       } else {
         throwError($NAME + " is undefined")
+      }
+    }
+    | e '.' NAME '=' e {
+      $$ = {
+        type: "setEntityVariable",
+        entity: $1,
+        variable: {
+            function: "getEntityVariable",
+            variable: {
+                  text: $NAME,
+                  dataType: undefined,
+                  entity: $1,
+                  key: $NAME
+            }
+        },
+        value: $5,
+      }
+    }
+    | '#' NAME '=' e {
+      $$ = {
+        type: "setVariable",
+        value: $4,
+        variableName: $NAME,
+      }
+    
+    }
+    | e '.$' NAME '=' e {
+      $$ = {
+        type: "setEntityAttribute",
+        attribute: $NAME,
+        entity: $1,
+        value: $5
+        
       }
     }
     | '@'NAME {

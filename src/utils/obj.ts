@@ -60,6 +60,14 @@ export const removeUnusedProperties = (obj: AnyObj): AnyObj => {
 }
 
 const excludeFuncs = {
+  setVariable: ({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
+    const obj: Record<string, any> = o as Record<string, any>
+    return `#${actionToString({ o: obj.variableName, defaultReturnType, gameData, parentKey })} = ${actionToString({ o: obj.value, parentKey, defaultReturnType, gameData })}`
+  },
+  setEntityVariable: ({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
+    const obj: Record<string, any> = o as Record<string, any>
+    return `${actionToString({ o: obj.entity, defaultReturnType, gameData, parentKey })}.$${actionToString({ o: obj.attribute, parentKey, defaultReturnType, gameData })} = ${actionToString({ o: obj.value, parentKey, defaultReturnType, gameData })}`
+  },
   concat: ({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
     const obj: Record<string, any> = o as Record<string, any>
     return `${actionToString({ o: obj.textA, defaultReturnType, gameData, parentKey })} + ${actionToString({ o: obj.textB, parentKey, defaultReturnType, gameData })}`
