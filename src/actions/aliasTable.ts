@@ -64,6 +64,6 @@ export const aliasTable = {
   getLastAttackingItem: 'lastAttackingItem',
 
   condition: 'if',
-  getMax: 'Math.max',
-  getMin: 'Math.min'
+  getMax: 'max',
+  getMin: 'min'
 }

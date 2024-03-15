@@ -60,10 +60,10 @@ export const removeUnusedProperties = (obj: AnyObj): AnyObj => {
   return newObj
 }
 
-const commonAttrSetter = (postFix: 'max' | 'min' | '' = '') => (({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
+const commonAttrSetter = (postFix: 'max' | 'min' | '' = '') => ({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
   const obj: Record<string, any> = o as Record<string, any>
   return `${actionToString({ o: obj.entity, defaultReturnType, gameData, parentKey })}.$${actionToString({ o: obj.attribute, defaultReturnType, gameData, parentKey, noNeedQuotes: true })}${postFix !== '' ? `.${postFix}` : ''} = ${actionToString({ o: obj.value, parentKey, defaultReturnType, gameData })}`
-})
+}
 const excludeFuncs = {
   setPlayerAttribute: commonAttrSetter(),
   setPlayerAttributeMax: commonAttrSetter('max'),

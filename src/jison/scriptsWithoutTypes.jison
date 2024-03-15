@@ -9,6 +9,8 @@
 
 
 
+
+
   function getType(o) {
     return typeof o === 'object'? o._returnType : typeof o
   }
@@ -287,6 +289,12 @@ e
     | '@'NAME {
       $$ = {
         type: $NAME
+      }
+    }
+    | '#'NAME {
+      $$ = {
+        function: "getVariable",
+        variableName: $NAME
       }
     }
     ;
