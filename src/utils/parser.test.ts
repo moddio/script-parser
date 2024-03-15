@@ -215,13 +215,13 @@ describe('parser', () => {
       gameData: tmpGameData,
       parentKey: ''
     })).toBe(
-      `assignPlayerType('aiNeutral', getVariable('AI neutral'))
-assignPlayerType('aiHostile', getVariable('AI hostile'))
+      `assignPlayerType('aiNeutral', #AI neutral)
+assignPlayerType('aiHostile', #AI hostile)
 repeat (8) {
-  createUnitAtPosition(0, randPos(getEntireMapRegion()), getVariable('AI resources'), 'tree')
+  createUnitAtPosition(0, randPos(getEntireMapRegion()), #AI resources, 'tree')
 }
 repeat (5) {
-  createUnitAtPosition('rock', getVariable('AI resources'), randPos(getEntireMapRegion()), 0)
+  createUnitAtPosition('rock', #AI resources, randPos(getEntireMapRegion()), 0)
 }`
     )
   })
@@ -392,13 +392,13 @@ if (getAttributeTypeOfAttribute(triggeringAttr) == 'respawnTimer') {
       parentKey: ''
     })).toBe(
       `@gameStart
-assignPlayerType('aiNeutral', getVariable('AI neutral'))
-assignPlayerType('aiHostile', getVariable('AI hostile'))
+assignPlayerType('aiNeutral', #AI neutral)
+assignPlayerType('aiHostile', #AI hostile)
 repeat (8) {
-  createUnitAtPosition(0, randPos(getEntireMapRegion()), getVariable('AI resources'), 'tree')
+  createUnitAtPosition(0, randPos(getEntireMapRegion()), #AI resources, 'tree')
 }
 repeat (5) {
-  createUnitAtPosition('rock', getVariable('AI resources'), randPos(getEntireMapRegion()), 0)
+  createUnitAtPosition('rock', #AI resources, randPos(getEntireMapRegion()), 0)
 }`
     )
   })
@@ -555,7 +555,7 @@ repeat (5) {
 if (getAttributeTypeOfAttribute(triggeringAttr) == 'health') {
   if (triggeringUnit.type == 'survivor') {
     // start respawn timer (it goes from 0 to 100)
-    setPlayerAttribute('respawnTimer', triggeringUnit.owner, 0)
+    triggeringUnit.owner.$respawnTimer = 0
     dropAllItems(triggeringUnit)
     if (triggeringUnit.type == 'pig') {
       spawnItem('s2vnp9Ph2d', getEntityPosition(triggeringUnit))
@@ -721,7 +721,7 @@ if (getAttributeTypeOfAttribute(triggeringAttr) == 'health') {
 if (getAttributeTypeOfAttribute(triggeringAttr) == 'health') {
 --   if (triggeringUnit.type == 'survivor') {
     // start respawn timer (it goes from 0 to 100)
---     setPlayerAttribute('respawnTimer', triggeringUnit.owner, 0)
+--     triggeringUnit.owner.$respawnTimer = 0
 --     dropAllItems(triggeringUnit)
 --     if (triggeringUnit.type == 'pig') {
 --       spawnItem('s2vnp9Ph2d', getEntityPosition(triggeringUnit))
@@ -1443,40 +1443,40 @@ if (getAttributeTypeOfAttribute(triggeringAttr) == 'health') {
       gameData: tmpGameData,
       parentKey: ''
     })).toBe(
-`// check if player has enough coins
+      `// check if player has enough coins
 if (getPlayerAttribute('T1kJ3nfdAL', lastSelectingDialogueOption) >= 125) {
   if (getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) != 50) {
     forAllUnits (allUnitsOwnedByPlayer(lastSelectingDialogueOption)) {
       // set temporarynumber as level/4
-      setEntityVariable(selectedUnit, temporaryNumber, getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) / 4 )
+      selectedUnit.#temporaryNumber = getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) / 4 
       if (selectedUnit.$efhpr4tQtt > 0) {
         // decrease temporary number by 6
-        setEntityVariable(selectedUnit, temporaryNumber, getMax(-4, selectedUnit.temporaryNumber - 6 ))
+        selectedUnit.#temporaryNumber = Math.max(-4, selectedUnit.temporaryNumber - 6 )
       }
       if (getItemCurrentlyHeldByUnit(selectedUnit).type == 'ohz9BkTzY2' || getItemCurrentlyHeldByUnit(selectedUnit).type == 'rgrZ7CMGq3') {
         // decrease temporary number by 3
-        setEntityVariable(selectedUnit, temporaryNumber, getMax(-4, selectedUnit.temporaryNumber - 4 ))
+        selectedUnit.#temporaryNumber = Math.max(-4, selectedUnit.temporaryNumber - 4 )
       }
-      setEntityVariable(selectedUnit, temporaryNumber2, randNumber(1, 100))
+      selectedUnit.#temporaryNumber2 = randNumber(1, 100)
       // apply gamble
       if (selectedUnit.temporaryNumber2 <= 5 + selectedUnit.temporaryNumber ) {
-        setPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption, getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) - 15 )
+        lastSelectingDialogueOption.$qFGQRuEeKM = getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) - 15 
         sendChatMessageToPlayer('You have lost 15 levels!', lastSelectingDialogueOption)
       } else {
         if (selectedUnit.temporaryNumber2 <= 35 + selectedUnit.temporaryNumber ) {
-          setPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption, getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) - 1 )
+          lastSelectingDialogueOption.$qFGQRuEeKM = getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) - 1 
           sendChatMessageToPlayer('You have lost 1 level!', lastSelectingDialogueOption)
         } else {
-          setPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption, getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) + 1 )
+          lastSelectingDialogueOption.$qFGQRuEeKM = getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) + 1 
           sendChatMessageToPlayer('You have won 1 level!', lastSelectingDialogueOption)
         }
       }
-      setEntityAttribute('QlfDWcbnOA', selectedUnit, 0)
-      setEntityAttributeMax('QlfDWcbnOA', selectedUnit, floor((250 + 250 * pow(getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption), 2.157 + getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) / 50  ) )  / 250 ) * 250 )
-      setPlayerAttribute('lu6W43aCJO', lastSelectingDialogueOption, 1 + (1 + getPlayerAttribute('tiBlLydQ87', lastSelectingDialogueOption) * 0.18 )  * getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) / 25   )
-      setPlayerAttribute('T1kJ3nfdAL', lastSelectingDialogueOption, getPlayerAttribute('T1kJ3nfdAL', lastSelectingDialogueOption) - 125 )
-      setEntityVariable(selectedUnit, temporaryNumber, 0)
-      setEntityVariable(selectedUnit, temporaryNumber2, 0)
+      selectedUnit.$QlfDWcbnOA = 0
+      selectedUnit.$QlfDWcbnOA.max = floor((250 + 250 * pow(getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption), 2.157 + getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) / 50  ) )  / 250 ) * 250 
+      lastSelectingDialogueOption.$lu6W43aCJO = 1 + (1 + getPlayerAttribute('tiBlLydQ87', lastSelectingDialogueOption) * 0.18 )  * getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) / 25   
+      lastSelectingDialogueOption.$T1kJ3nfdAL = getPlayerAttribute('T1kJ3nfdAL', lastSelectingDialogueOption) - 125 
+      selectedUnit.#temporaryNumber = 0
+      selectedUnit.#temporaryNumber2 = 0
     }
   } else {
     sendChatMessageToPlayer('You cannot gamble at level 50!', lastSelectingDialogueOption)
@@ -1609,11 +1609,11 @@ if (getPlayerAttribute('T1kJ3nfdAL', lastSelectingDialogueOption) >= 125) {
       gameData: tmpGameData,
       parentKey: ''
     })).toBe(`@gameStart
-assignPlayerType(getVariable('ai player 1'), 'npCs')
-setVariable(getVariable('_prebattle'), 'gameState')
-setVariable(getMax(getMapHeight() * 1.414 , getMapWidth() * 1.414 ), 'circleSize')
-createEntityForPlayerAtPositionWithDimensions('pCVDYsr4Ta', getVariable('ai player 1'), centerOfRegion(getEntireMapRegion()), getVariable('circleSize'), getVariable('circleSize'), 0, 'unitTypes', 'KEdaPN8Fvy')
--- createUnitAtPosition('pCVDYsr4Ta', getVariable('ai player 1'), centerOfRegion(getEntireMapRegion()), 0, 'GQ3lcfYjSb')
-setVariable(lastCreatedUnit, 'floor')`)
+assignPlayerType(#ai player 1, 'npCs')
+#gameState = #_prebattle
+#circleSize = Math.max(getMapHeight() * 1.414 , getMapWidth() * 1.414 )
+createEntityForPlayerAtPositionWithDimensions('pCVDYsr4Ta', #ai player 1, centerOfRegion(getEntireMapRegion()), #circleSize, #circleSize, 0, 'unitTypes', 'KEdaPN8Fvy')
+-- createUnitAtPosition('pCVDYsr4Ta', #ai player 1, centerOfRegion(getEntireMapRegion()), 0, 'GQ3lcfYjSb')
+#floor = lastCreatedUnit`)
   })
 })

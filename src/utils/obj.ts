@@ -12,6 +12,7 @@ interface actionTostringProps {
   indentation?: number
   nestedConditions?: boolean
   disabled?: boolean
+  noNeedQuotes?: boolean
 }
 
 const DEFAULTINDENTATION = 2
@@ -59,14 +60,28 @@ export const removeUnusedProperties = (obj: AnyObj): AnyObj => {
   return newObj
 }
 
+const commonAttrSetter = (postFix: 'max' | 'min' | '' = '') => (({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
+  const obj: Record<string, any> = o as Record<string, any>
+  return `${actionToString({ o: obj.entity, defaultReturnType, gameData, parentKey })}.$${actionToString({ o: obj.attribute, defaultReturnType, gameData, parentKey, noNeedQuotes: true })}${postFix !== '' ? `.${postFix}` : ''} = ${actionToString({ o: obj.value, parentKey, defaultReturnType, gameData })}`
+})
 const excludeFuncs = {
+  setPlayerAttribute: commonAttrSetter(),
+  setPlayerAttributeMax: commonAttrSetter('max'),
+  setPlayerAttributeMin: commonAttrSetter('min'),
+  setEntityAttribute: commonAttrSetter(),
+  setEntityAttributeMax: commonAttrSetter('max'),
+  setEntityAttributeMin: commonAttrSetter('min'),
+  getVariable: ({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
+    const obj: Record<string, any> = o as Record<string, any>
+    return `#${actionToString({ o: obj.variableName, defaultReturnType, gameData, parentKey, noNeedQuotes: true })}`
+  },
   setVariable: ({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
     const obj: Record<string, any> = o as Record<string, any>
-    return `#${actionToString({ o: obj.variableName, defaultReturnType, gameData, parentKey })} = ${actionToString({ o: obj.value, parentKey, defaultReturnType, gameData })}`
+    return `#${actionToString({ o: obj.variableName, defaultReturnType, gameData, parentKey, noNeedQuotes: true })} = ${actionToString({ o: obj.value, parentKey, defaultReturnType, gameData })}`
   },
   setEntityVariable: ({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
     const obj: Record<string, any> = o as Record<string, any>
-    return `${actionToString({ o: obj.entity, defaultReturnType, gameData, parentKey })}.$${actionToString({ o: obj.attribute, parentKey, defaultReturnType, gameData })} = ${actionToString({ o: obj.value, parentKey, defaultReturnType, gameData })}`
+    return `${actionToString({ o: obj.entity, defaultReturnType, gameData, parentKey })}.${actionToString({ o: obj.variable, parentKey, defaultReturnType, gameData })} = ${actionToString({ o: obj.value, parentKey, defaultReturnType, gameData })}`
   },
   concat: ({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
     const obj: Record<string, any> = o as Record<string, any>
@@ -80,8 +95,8 @@ const excludeFuncs = {
     const obj: Record<string, any> = o as Record<string, any>
     return `${typeof obj.player === 'object' ? actionToString({ o: obj.player, parentKey, defaultReturnType, gameData }) : obj.player}.${obj.variable?.variable?.key}`
   },
-  getEntityVariable: ({ o: obj }: actionTostringProps) => (obj as Record<string, any>).variable?.text,
-  getPlayerVariable: ({ o: obj }: actionTostringProps) => (obj as Record<string, any>).variable?.text,
+  getEntityVariable: ({ o: obj }: actionTostringProps) => `#${(obj as Record<string, any>).variable?.text}`,
+  getPlayerVariable: ({ o: obj }: actionTostringProps) => `#${(obj as Record<string, any>).variable?.text}`,
   getEntityAttribute: ({ o, defaultReturnType, gameData, parentKey, indentation }: actionTostringProps) => {
     const obj: Record<string, any> = o as Record<string, any>
     return `${typeof obj.entity === 'object' ? actionToString({ o: obj.entity, parentKey, defaultReturnType, gameData }) : obj.entity}.$${obj.attribute}`
@@ -208,7 +223,7 @@ ${disabled === true ? '-- ' : ''}${' '.repeat(indentation)}}`
 
 const addBracketsWhenNeeded = (obj: AnyObj, output: string): string => obj.brackets === true ? `(${output})` : output
 
-export const actionToString = ({ o, parentKey, defaultReturnType, gameData, indentation = 0, disabled }: actionTostringProps): string => {
+export const actionToString = ({ o, parentKey, defaultReturnType, gameData, indentation = 0, disabled, noNeedQuotes = false }: actionTostringProps): string => {
   let output = ''
   if (o === null || o === undefined) {
     return output
@@ -251,7 +266,8 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, inde
           return returnVal
         }
         default: {
-          return `'${o.replaceAll("'", "\\'")}'`
+          const returnString = o.replaceAll("'", "\\'")
+          return noNeedQuotes ? `${returnString}` : `'${returnString}'`
         }
       }
     }

@@ -63,5 +63,7 @@ export const aliasTable = {
   getLastChatMessageSentByPlayer: 'lastChatMessageSent',
   getLastAttackingItem: 'lastAttackingItem',
 
-  condition: 'if'
+  condition: 'if',
+  getMax: 'Math.max',
+  getMin: 'Math.min'
 }
