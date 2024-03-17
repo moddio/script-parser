@@ -11,11 +11,22 @@ export const multiDefinedTable: Record<string, Record<string, string>> = {
     item: 'getItemTypeOfItem',
     unit: 'getUnitTypeOfUnit',
     player: 'playerTypeOfPlayer',
-    unitTypeGroup: 'getRandomUnitTypeFromUnitTypeGroup'
+    unitTypeGroup: 'getRandomUnitTypeFromUnitTypeGroup',
+    attribute: 'getAttributeTypeOfAttribute'
   },
   owner: {
     item: 'getOwnerOfItem',
     unit: 'getOwner',
     sensor: 'ownerUnitOfSensor'
+  },
+  max: {
+    Math: 'getMax',
+    entity: 'entityAttributeMax',
+    player: 'playerAttributeMax'
+  },
+  min: {
+    Math: 'getMin',
+    entity: 'entityAttributeMin',
+    player: 'playerAttributeMin'
   }
 }
