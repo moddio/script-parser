@@ -6,25 +6,34 @@ import { type AnyObj } from '../types'
 
 // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
 const getType = (frag: AnyObj): string => frag?.extraData?.type || frag?.extraData?.dataType || frag?.extraData?.dataTypes || frag?.dataType
-const getVars = (value: any, actionObj: any): string => {
+const getVars = (value: any, actionObj: any, isNameSpace: boolean = false, extraParamsCount: number = 0): string => {
   const types: string[] = []
   value.data?.fragments.forEach((frag: { type: string, field: string | undefined }, index: any) => {
     if (frag.type === 'variable' && (frag.field !== undefined)) {
-      actionObj[frag.field] = String.fromCharCode(types.length + 97)
+      actionObj[frag.field] = String.fromCharCode(types.length + (isNameSpace ? 98 : 97))
       types.push(getType(frag))
     }
   })
   let str = ''
   for (let i = 0; i < types.length; i++) {
-    str += `${String.fromCharCode(i + 97)}:${types[i]}#`
+    str += `${String.fromCharCode(i + extraParamsCount + (isNameSpace ? 98 : 97))}:${types[i]}#`
+  }
+  if (extraParamsCount > 0) {
+    for (let i = 0; i < extraParamsCount; i++) {
+      str = `${String.fromCharCode(i + 97)}:entity#` + str
+    }
   }
   return str
 }
 
+export const NAMESPACES = ['Math']
 const postProcess = (actionObjs: AnyObj): void => {
   actionObjs.concat = "a:string,number#b:string,number#{return {\"function\":\"concat\",_returnType:'string',textA:a,textB:b}}"
   actionObjs.getVariable = "a:string#{return {\"function\":\"getVariable\",_returnType:'Multiple',variableName:a}}"
   actionObjs.runScript = "a:string#{return {\"function\":\"runScript\",_returnType:'script',scriptName:a}}"
+  NAMESPACES.forEach((namespace) => {
+    actionObjs[namespace] = `return {_isNameSpace: true,_returnType: '${namespace}'}`
+  })
 }
 
 axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
@@ -58,14 +67,13 @@ axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
     })
     Object.entries(multiDefinedTable).forEach(([key, value]) => {
       const values = Object.entries(value)
-      let str = `${getVars(obj.find((o: any) => o.key === values[0][1]), {})}{return `
+      let str = `${getVars(obj.find((o: any) => o.key === values[0][1]), {}, false, values.every((kv) => !NAMESPACES.includes(kv[0])) ? 0 : 1)}{return `
       values.forEach(([k, v], idx) => {
         const actionObj: any = {
           function: v
         }
-
         try {
-          getVars(obj.find((o: any) => o.key === v), actionObj)
+          getVars(obj.find((o: any) => o.key === v), actionObj, NAMESPACES.includes(k))
         } catch (e) {
           console.log(k, obj.key, e)
         }

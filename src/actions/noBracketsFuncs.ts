@@ -33,5 +33,6 @@ export const noBracketsFuncs = [
   'getLastAttackingItem',
   'lastReceivedPostResponse',
   'lastUpdatedVariableName',
-  'selectedUnit'
+  'selectedUnit',
+  'Math'
 ]
