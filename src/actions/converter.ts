@@ -67,7 +67,8 @@ axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
     })
     Object.entries(multiDefinedTable).forEach(([key, value]) => {
       const values = Object.entries(value)
-      let str = `${getVars(obj.find((o: any) => o.key === values[0][1]), {}, false, values.every((kv) => !NAMESPACES.includes(kv[0])) ? 0 : 1)}{return `
+      const notInNameSpaces = values.every((kv) => !NAMESPACES.includes(kv[0]))
+      let str = `${getVars(obj.find((o: any) => o.key === values[0][1]), {}, false, notInNameSpaces ? 0 : 1)}{return `
       values.forEach(([k, v], idx) => {
         const actionObj: any = {
           function: v
@@ -78,7 +79,7 @@ axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
           console.log(k, obj.key, e)
         }
         let count = 0
-        str += `a._returnType === '${k}' || a._returnType === 'entity'? ${JSON.stringify(actionObj)} : ${idx === values.length - 1 ? "{'error': a}}" : ''}`.replace(/"/g, function (match) {
+        str += `a._returnType === '${k}' ${!NAMESPACES.includes(k) ? '|| a._returnType === \'entity\'' : ''}? ${JSON.stringify(actionObj)} : ${idx === values.length - 1 ? "{'error': a}}" : ''}`.replace(/"/g, function (match) {
           count++
           return (count > 4) ? '' : match
         })
