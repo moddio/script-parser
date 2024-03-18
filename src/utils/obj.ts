@@ -71,9 +71,31 @@ const excludeFuncs = {
   setEntityAttribute: commonAttrSetter(),
   setEntityAttributeMax: commonAttrSetter('max'),
   setEntityAttributeMin: commonAttrSetter('min'),
+  setTimeOut: ({ o, defaultReturnType, gameData, parentKey, indentation = 0, disabled }: actionTostringProps) => {
+    const obj = o as Record<string, any>
+    const nowIndentation = DEFAULTINDENTATION + indentation
+    return `setTimeOut(${actionToString({ o: obj.duration, defaultReturnType, gameData, parentKey, indentation: 0 })}) {
+${actionToString({ o: obj.actions, defaultReturnType, gameData, parentKey, indentation: nowIndentation, disabled })}
+${disabled === true ? '-- ' : ''}${' '.repeat(indentation)}}`
+  },
+  repeatWithDelay: ({ o, defaultReturnType, gameData, parentKey, indentation = 0, disabled }: actionTostringProps) => {
+    const obj = o as Record<string, any>
+    const nowIndentation = DEFAULTINDENTATION + indentation
+    return `repeatWithDelay(${actionToString({ o: obj.count, defaultReturnType, gameData, parentKey, indentation: 0 })}, ${actionToString({ o: obj.delay, defaultReturnType, gameData, parentKey, indentation: 0 })}) {
+${actionToString({ o: obj.actions, defaultReturnType, gameData, parentKey, indentation: nowIndentation, disabled })}
+${disabled === true ? '-- ' : ''}${' '.repeat(indentation)}}`
+  },
   getVariable: ({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
     const obj: Record<string, any> = o as Record<string, any>
     return `#${actionToString({ o: obj.variableName, defaultReturnType, gameData, parentKey, noNeedQuotes: true })}`
+  },
+  getMax: ({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
+    const obj: Record<string, any> = o as Record<string, any>
+    return `Math.max(${actionToString({ o: obj.num1, defaultReturnType, gameData, parentKey })}, ${actionToString({ o: obj.num2, parentKey, defaultReturnType, gameData })})`
+  },
+  getMin: ({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
+    const obj: Record<string, any> = o as Record<string, any>
+    return `Math.min(${actionToString({ o: obj.num1, defaultReturnType, gameData, parentKey })}, ${actionToString({ o: obj.num2, parentKey, defaultReturnType, gameData })})`
   },
   setVariable: ({ o, defaultReturnType, gameData, parentKey }: actionTostringProps) => {
     const obj: Record<string, any> = o as Record<string, any>

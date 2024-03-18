@@ -34,5 +34,14 @@ export const noBracketsFuncs = [
   'lastReceivedPostResponse',
   'lastUpdatedVariableName',
   'selectedUnit',
+  'selectedUnitType',
+  'selectedElement',
+  'selectedElementsKey',
+  'selectedItem',
+  'selectedItemType',
+  'selectedParticle',
+  'selectedPlayer',
+  'selectedProjectile',
+  'selectedRegion',
   'Math'
 ]
