@@ -1,4 +1,4 @@
-import { actionToString, parser } from '..'
+import { actionToString } from '..'
 import { tmpGameData } from '../tmp/tmpGameData'
 
 describe('parser-multiline', () => {
