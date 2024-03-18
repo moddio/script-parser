@@ -235,7 +235,7 @@ ${disabled === true ? '-- ' : ''}${' '.repeat(indentation)}}`
     const nowIndentation = DEFAULTINDENTATION + indentation
     return `if (${actionToString({ o: obj.conditions, defaultReturnType, gameData, parentKey, indentation: 0 })}) {
 ${actionToString({ o: obj.then, defaultReturnType, gameData, parentKey, indentation: nowIndentation, disabled })}
-${disabled === true ? '-- ' : ''}${' '.repeat(indentation)}}${obj.else.length > 0
+${disabled === true ? '-- ' : ''}${' '.repeat(indentation)}}${obj.else?.length > 0
         ? ` else {
 ${actionToString({ o: obj.else, defaultReturnType, gameData, parentKey, indentation: nowIndentation, disabled })}
 ${disabled === true ? '-- ' : ''}${' '.repeat(indentation)}}`
