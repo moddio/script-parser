@@ -263,7 +263,7 @@ e
     }
     | e '.' NAME '=' e {
       $$ = $NAME === 'max' || $NAME === 'min' ? {
-               type: "setEntityAttribute" + firstUpperCase($NAME),
+               type: ($1._returnType === 'player' ? "setPlayerAttribute" : "setEntityAttribute") + firstUpperCase($NAME),
                attribute:$1.attribute,
                entity: $1.entity,
                value: $5,
@@ -292,7 +292,7 @@ e
     }
     | e '.$' NAME '=' e {
       $$ = {
-        type: "setEntityAttribute",
+        type: $1._returnType === 'player' ? "setPlayerAttribute" : "setEntityAttribute",
         attribute: $NAME,
         entity: $1,
         value: $5
