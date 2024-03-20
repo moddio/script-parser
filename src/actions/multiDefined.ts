@@ -28,5 +28,9 @@ export const multiDefinedTable: Record<string, Record<string, string>> = {
     Math: 'getMin',
     entity: 'entityAttributeMin',
     player: 'playerAttributeMin'
+  },
+  name: {
+    entity: 'entityName',
+    _: 'entityName'
   }
 }

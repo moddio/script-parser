@@ -9,6 +9,15 @@ describe('parser', () => {
   })
 
   test('pos( 2+2, 2+2)', () => { expect(parser.parse('pos(2+2, 2+2)')).toMatchObject({ _returnType: 'position', function: 'xyCoordinate', x: { _returnType: 'number', function: 'calculate', items: [{ operator: '+' }, 2, 2] }, y: { _returnType: 'number', function: 'calculate', items: [{ operator: '+' }, 2, 2] } }) })
+  test('thisEntity.type.name', () => {
+    expect(actionToString({
+      o: parser.parse('thisEntity.type.name'),
+      defaultReturnType: '',
+      gameData: { unitTypes: {} },
+      parentKey: ''
+    })).toBe('thisEntity.type.name')
+  })
+  test('thisEntity.type.name', () => { expect(parser.parse('thisEntity.type.name')).toMatchObject({ _returnType: 'string', entity: { _returnType: 'itemType', entity: { _returnType: 'entity', function: 'thisEntity' }, function: 'getItemTypeOfItem' }, function: 'entityName' }) })
   test('if ( 1 > 2)', () => { expect(parser.parse('if (1 > 2)')).toMatchObject({ _returnType: 'system', conditions: [{ operandType: 'number', operator: '>' }, 1, 2], function: 'condition' }) })
   test('thisEntity.testVar4', () => {
     expect(actionToString({

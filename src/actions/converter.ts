@@ -68,10 +68,12 @@ axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
     Object.entries(multiDefinedTable).forEach(([key, value]) => {
       const values = Object.entries(value)
       const notInNameSpaces = values.every((kv) => !NAMESPACES.includes(kv[0]))
-      let str = `${getVars(obj.find((o: any) => o.key === values[0][1]), {}, false, notInNameSpaces ? 0 : 1)}{return `
+      const action = obj.find((o: any) => o.key === values[0][1])
+      let str = `${getVars(action, {}, false, notInNameSpaces ? 0 : 1)}{return `
       values.forEach(([k, v], idx) => {
         const actionObj: any = {
-          function: v
+          function: v,
+          _returnType: action.data.category
         }
         try {
           getVars(obj.find((o: any) => o.key === v), actionObj, NAMESPACES.includes(k))
@@ -79,9 +81,9 @@ axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
           console.log(k, obj.key, e)
         }
         let count = 0
-        str += `a._returnType === '${k}' ${!NAMESPACES.includes(k) ? '|| a._returnType === \'entity\'' : ''}? ${JSON.stringify(actionObj)} : ${idx === values.length - 1 ? "{'error': a}}" : ''}`.replace(/"/g, function (match) {
+        str += `a._returnType === '${k}' ${k === '_' ? '|| true' : ' '} ${!NAMESPACES.includes(k) ? '|| a._returnType === \'entity\'' : ''}? ${JSON.stringify(actionObj)} : ${idx === values.length - 1 ? "{'error': a}}" : ''}`.replace(/"/g, function (match) {
           count++
-          return (count > 4) ? '' : match
+          return (count > 8) ? '' : match
         })
       })
       actionsObj[key] = str
