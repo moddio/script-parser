@@ -322,11 +322,12 @@ export const actionToString = ({ o, parentKey, defaultReturnType, gameData, inde
   // for comparison ,1 == 2
   if (obj[0] !== undefined && obj[0].operandType !== undefined) {
     let operator: string = obj[0].operator
+    const operandType: string = obj[0].operandType
     let left = typeof obj[1] === 'object' ? actionToString({ o: obj[1], parentKey: operator, defaultReturnType, gameData }) : obj[1]
     let right = typeof obj[2] === 'object' ? actionToString({ o: obj[2], parentKey: operator, defaultReturnType, gameData }) : obj[2]
     // map AND, OR to '&&', '||'
-    left = typeof obj[1] === 'string' ? `'${left.replaceAll("'", "\\'")}'` : left
-    right = typeof obj[2] === 'string' ? `'${right.replaceAll("'", "\\'")}'` : right
+    left = typeof obj[1] === 'string' ? `'${left.replaceAll("'", "\\'")}'${operandType !== 'string' ? ` as ${operandType}` : ''}` : left
+    right = typeof obj[2] === 'string' ? `'${right.replaceAll("'", "\\'")}'${operandType !== 'string' ? ` as ${operandType}` : ''}` : right
     operator = operatorMap[operator as keyof typeof operatorMap] ?? operator
     output += `${left} ${operator} ${right}`
     return addBracketsWhenNeeded(obj, output)

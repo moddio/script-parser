@@ -312,7 +312,7 @@ repeat (5) {
       `// respawn players
 // hope everything works fine
 // xD
-if (getAttributeTypeOfAttribute(triggeringAttr) == 'respawnTimer') {
+if (getAttributeTypeOfAttribute(triggeringAttr) == 'respawnTimer' as attributeType) {
   createUnitAtPosition('survivor', randPos(getEntireMapRegion()), triggeringPlayer, 0)
   playerCameraTrackUnit(triggeringPlayer, triggeringPlayer, lastCreatedUnit)
   // when a player leaves, destroy all units owned by that player
@@ -561,16 +561,16 @@ repeat (5) {
       parentKey: ''
     })).toBe(
       `@unitAttributeBecomesZero
-if (getAttributeTypeOfAttribute(triggeringAttr) == 'health') {
-  if (triggeringUnit.type == 'survivor') {
+if (getAttributeTypeOfAttribute(triggeringAttr) == 'health' as attributeType) {
+  if (triggeringUnit.type == 'survivor' as unitType) {
     // start respawn timer (it goes from 0 to 100)
     triggeringUnit.owner.$respawnTimer = 0
     dropAllItems(triggeringUnit)
-    if (triggeringUnit.type == 'pig') {
+    if (triggeringUnit.type == 'pig' as unitType) {
       spawnItem('s2vnp9Ph2d', getEntityPosition(triggeringUnit))
     }
   }
-  if (triggeringUnit.type == 'bear') {
+  if (triggeringUnit.type == 'bear' as unitType) {
     spawnItem('HBlfzHEdHP', getEntityPosition(triggeringUnit))
   }
   destroyEntity(triggeringUnit)
@@ -727,16 +727,16 @@ if (getAttributeTypeOfAttribute(triggeringAttr) == 'health') {
       parentKey: ''
     })).toBe(
       `@unitAttributeBecomesZero
-if (getAttributeTypeOfAttribute(triggeringAttr) == 'health') {
---   if (triggeringUnit.type == 'survivor') {
+if (getAttributeTypeOfAttribute(triggeringAttr) == 'health' as attributeType) {
+--   if (triggeringUnit.type == 'survivor' as unitType) {
     // start respawn timer (it goes from 0 to 100)
 --     triggeringUnit.owner.$respawnTimer = 0
 --     dropAllItems(triggeringUnit)
---     if (triggeringUnit.type == 'pig') {
+--     if (triggeringUnit.type == 'pig' as unitType) {
 --       spawnItem('s2vnp9Ph2d', getEntityPosition(triggeringUnit))
 --     }
 --   }
-  if (triggeringUnit.type == 'bear') {
+  if (triggeringUnit.type == 'bear' as unitType) {
     spawnItem('HBlfzHEdHP', getEntityPosition(triggeringUnit))
   }
   destroyEntity(triggeringUnit)
@@ -1462,7 +1462,7 @@ if (getPlayerAttribute('T1kJ3nfdAL', lastSelectingDialogueOption) >= 125) {
         // decrease temporary number by 6
         selectedUnit.#temporaryNumber = Math.max(-4, selectedUnit.temporaryNumber - 6 )
       }
-      if (getItemCurrentlyHeldByUnit(selectedUnit).type == 'ohz9BkTzY2' || getItemCurrentlyHeldByUnit(selectedUnit).type == 'rgrZ7CMGq3') {
+      if (getItemCurrentlyHeldByUnit(selectedUnit).type == 'ohz9BkTzY2' as itemType || getItemCurrentlyHeldByUnit(selectedUnit).type == 'rgrZ7CMGq3' as itemType) {
         // decrease temporary number by 3
         selectedUnit.#temporaryNumber = Math.max(-4, selectedUnit.temporaryNumber - 4 )
       }

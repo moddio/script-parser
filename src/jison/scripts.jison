@@ -70,6 +70,7 @@
 \s+                   /* skip whitespace */
 'true'                return "true"
 'false'               return "false"
+'as'                  return 'AS'
 ["][^"]*["]|['][^']*[']           return 'STRING'
 [0-9]+("."[0-9]+)?\b  return 'NUMBER'
 "&&"|"and"                  return 'AND'
@@ -99,6 +100,7 @@
 /lex
 
 %start expressions
+%left AS
 %left '+' '-'
 %left '*' '/'
 %left '^'
@@ -163,6 +165,26 @@ e
         { $$ = typeof $2 === 'object'?{...$2, brackets: true}: $2; }
     | condition_list
         {$$ = $condition_list}
+    | STRING AS NAME COMPARE e
+        { $$ = [
+                    {
+                         "operandType": $5,
+                         "operator": $COMPARE
+                    },
+                    $1,
+                    $3
+               ]
+    }
+    | e COMPARE STRING AS NAME
+        { $$ = [
+                    {
+                         "operandType": $5,
+                         "operator": $COMPARE
+                    },
+                    $1,
+                    $3
+               ]
+    }
     | condition_list COMPARE e 
         { $$ = [
                     {
