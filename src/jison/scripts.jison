@@ -171,8 +171,8 @@ e
                          "operandType": $5,
                          "operator": $COMPARE
                     },
-                    $1,
-                    $3
+                    $1.slice(1, $3.length - 1),
+                    $5
                ]
     }
     | e COMPARE STRING AS NAME
@@ -182,7 +182,7 @@ e
                          "operator": $COMPARE
                     },
                     $1,
-                    $3
+                    $3.slice(1, $3.length - 1)
                ]
     }
     | condition_list COMPARE e 
