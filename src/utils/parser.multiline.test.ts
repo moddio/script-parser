@@ -50,7 +50,7 @@ describe('parser_multiline', () => {
       gameData: tmpGameData,
       parentKey: ''
     })).toBe(
-`setTimeOut(8) {
+      `setTimeOut(8) {
   // hello
   sendChatMessage('message')
   repeatWithDelay(2, 500) {
@@ -63,6 +63,6 @@ describe('parser_multiline', () => {
 
 describe('parser_multiline_back', () => {
   test('initialize', () => {
-    expect()
+    // TODO
   })
 })
