@@ -1,7 +1,7 @@
 import { actionToString } from '..'
 import { tmpGameData } from '../tmp/tmpGameData'
 
-describe('parser-multiline', () => {
+describe('parser_multiline', () => {
   test('multiline actions with nested if and disabled some', () => {
     expect(actionToString({
       o: {
@@ -58,5 +58,11 @@ describe('parser-multiline', () => {
   }
 }`
     )
+  })
+})
+
+describe('parser_multiline_back', () => {
+  test('initialize', () => {
+    expect()
   })
 })
