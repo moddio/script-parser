@@ -2,6 +2,7 @@ import { actionToString, parser } from '..'
 import { tmpGameData } from '../tmp/tmpGameData'
 
 describe('parser', () => {
+  test('vector3(0, 0, 0)', () => { expect(parser.parse('vector3(0, 0, 0)')).toMatchObject({ _returnType: 'vector3', function: 'vector3', x: 0, y: 0, z: 0 }) })
   test('1 == 1', () => { expect(parser.parse('1 == 1')).toMatchObject([{ operandType: 'number', operator: '==' }, 1, 1]) })
   test('1 == 1 convert back', () => { expect(actionToString({ o: parser.parse('1 == 1'), defaultReturnType: '', parentKey: '', gameData: { unitTypes: {} } })).toBe('1 == 1') })
   test('1 == 1 && 2 == 2', () => {

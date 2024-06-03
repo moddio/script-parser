@@ -7,8 +7,8 @@ import { type AnyObj } from '../types'
 // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
 const getType = (frag: AnyObj): string => frag?.extraData?.type || frag?.extraData?.dataType || frag?.extraData?.dataTypes || frag?.dataType
 const getVars = (value: any, actionObj: any, isNameSpace: boolean = false, extraParamsCount: number = 0): string => {
-  const types: string[] = []
-  value.data?.fragments.forEach((frag: { type: string, field: string | undefined }, index: any) => {
+  const types: string[] = [];
+  (value.data?.fragments3D ?? value.data?.fragments).forEach((frag: { type: string, field: string | undefined }, index: any) => {
     if (frag.type === 'variable' && (frag.field !== undefined)) {
       actionObj[frag.field] = String.fromCharCode(types.length + (isNameSpace ? 98 : 97))
       types.push(getType(frag))
