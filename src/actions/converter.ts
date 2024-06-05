@@ -31,6 +31,7 @@ const postProcess = (actionObjs: AnyObj): void => {
   actionObjs.concat = "a:string,number#b:string,number#{return {\"function\":\"concat\",_returnType:'string',textA:a,textB:b}}"
   actionObjs.getVariable = "a:string#{return {\"function\":\"getVariable\",_returnType:'Multiple',variableName:a}}"
   actionObjs.runScript = "a:string#{return {\"function\":\"runScript\",_returnType:'script',scriptName:a}}"
+  actionObjs.createEntityForPlayerAtPositionWithDimensions = "a:entity#b:player#c:vector3#d:vector3#e:vector3#{return {\"function\":\"createEntityForPlayerAtPositionWithDimensions\",_returnType:'unit',entity:a,player:b,position:c,scale:d,rotation:e}}"
   NAMESPACES.forEach((namespace) => {
     actionObjs[namespace] = `return {_isNameSpace: true,_returnType: '${namespace}'}`
   })
@@ -81,7 +82,7 @@ axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
           console.log(k, obj.key, e)
         }
         let count = 0
-        str += `a._returnType === '${k}' ${k === '_' ? '|| true' : ' '} ${!NAMESPACES.includes(k) ? '|| a._returnType === \'entity\'' : ''}? ${JSON.stringify(actionObj)} : ${idx === values.length - 1 ? "{'error': a}}" : ''}`.replace(/"/g, function (match) {
+        str += `a._returnType === '${k}' ${k === '_' ? '|| true' : ' '} ${!NAMESPACES.includes(k) ? '|| a._returnType === \'entity\'' : ''}? ${JSON.stringify(actionObj)} : ${idx === values.length - 1 ? JSON.stringify(actionObj) : ''}`.replace(/"/g, function (match) {
           count++
           return (count > 8) ? '' : match
         })

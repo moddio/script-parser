@@ -111,11 +111,11 @@ ${disabled === true ? '-- ' : ''}${' '.repeat(indentation)}}`
   },
   getValueOfEntityVariable: ({ o, defaultReturnType, gameData, parentKey, indentation }: actionTostringProps) => {
     const obj: Record<string, any> = o as Record<string, any>
-    return `${typeof obj.entity === 'object' ? actionToString({ o: obj.entity, parentKey, defaultReturnType, gameData }) : obj.entity}.${obj.variable?.variable?.key}`
+    return `${typeof obj.entity === 'object' ? actionToString({ o: obj.entity, parentKey, defaultReturnType, gameData }) : obj.entity}.${actionToString({ o: obj.variable, parentKey, defaultReturnType, gameData })}`
   },
   getValueOfPlayerVariable: ({ o, defaultReturnType, gameData, parentKey, indentation }: actionTostringProps) => {
     const obj: Record<string, any> = o as Record<string, any>
-    return `${typeof obj.player === 'object' ? actionToString({ o: obj.player, parentKey, defaultReturnType, gameData }) : obj.player}.${obj.variable?.variable?.key}`
+    return `${typeof obj.player === 'object' ? actionToString({ o: obj.player, parentKey, defaultReturnType, gameData }) : obj.player}.${actionToString({ o: obj.variable, parentKey, defaultReturnType, gameData })}`
   },
   getEntityVariable: ({ o: obj }: actionTostringProps) => `#${(obj as Record<string, any>).variable?.text}`,
   getPlayerVariable: ({ o: obj }: actionTostringProps) => `#${(obj as Record<string, any>).variable?.text}`,

@@ -26,7 +26,7 @@ describe('parser', () => {
       defaultReturnType: '',
       gameData: { unitTypes: {} },
       parentKey: ''
-    })).toBe('thisEntity.testVar4')
+    })).toBe('thisEntity.#testVar4')
   })
   test('applyImpulse', () => {
     expect(actionToString({
@@ -140,6 +140,29 @@ describe('parser', () => {
       gameData: { unitTypes: {} },
       parentKey: ''
     })).toBe('true == false')
+  })
+  test('getValueOfVariable', () => {
+    expect(actionToString({
+      o: {
+        function: 'getValueOfEntityVariable',
+        variable: {
+          function: 'getEntityVariable',
+          variable: {
+            text: 'isInVehicle',
+            dataType: 'boolean',
+            entity: 'human',
+            key: 'isInVehicle'
+          }
+        },
+        entity: {
+          function: 'getVariable',
+          variableName: 'tempUnit'
+        }
+      },
+      defaultReturnType: '',
+      gameData: { unitTypes: {} },
+      parentKey: ''
+    })).toBe('#tempUnit.#isInVehicle')
   })
   test(' "a" != "b" ', () => {
     expect(parser.parse(' "a" != "b" ')).toMatchObject([{ operandType: 'string', operator: '!=' }, 'a', 'b'])
@@ -1461,19 +1484,19 @@ if (getPlayerAttribute('T1kJ3nfdAL', lastSelectingDialogueOption) >= 125) {
       selectedUnit.#temporaryNumber = getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) / 4 
       if (selectedUnit.$efhpr4tQtt > 0) {
         // decrease temporary number by 6
-        selectedUnit.#temporaryNumber = Math.max(-4, selectedUnit.temporaryNumber - 6 )
+        selectedUnit.#temporaryNumber = Math.max(-4, selectedUnit.#temporaryNumber - 6 )
       }
       if (getItemCurrentlyHeldByUnit(selectedUnit).type == 'ohz9BkTzY2' as itemType || getItemCurrentlyHeldByUnit(selectedUnit).type == 'rgrZ7CMGq3' as itemType) {
         // decrease temporary number by 3
-        selectedUnit.#temporaryNumber = Math.max(-4, selectedUnit.temporaryNumber - 4 )
+        selectedUnit.#temporaryNumber = Math.max(-4, selectedUnit.#temporaryNumber - 4 )
       }
       selectedUnit.#temporaryNumber2 = randNumber(1, 100)
       // apply gamble
-      if (selectedUnit.temporaryNumber2 <= 5 + selectedUnit.temporaryNumber ) {
+      if (selectedUnit.#temporaryNumber2 <= 5 + selectedUnit.#temporaryNumber ) {
         lastSelectingDialogueOption.$qFGQRuEeKM = getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) - 15 
         sendChatMessageToPlayer('You have lost 15 levels!', lastSelectingDialogueOption)
       } else {
-        if (selectedUnit.temporaryNumber2 <= 35 + selectedUnit.temporaryNumber ) {
+        if (selectedUnit.#temporaryNumber2 <= 35 + selectedUnit.#temporaryNumber ) {
           lastSelectingDialogueOption.$qFGQRuEeKM = getPlayerAttribute('qFGQRuEeKM', lastSelectingDialogueOption) - 1 
           sendChatMessageToPlayer('You have lost 1 level!', lastSelectingDialogueOption)
         } else {
