@@ -94,6 +94,7 @@
 '@'                   return '@'
 '#'                   return '#'
 ".$"                  return '.$'
+".#"                  return '.#'
 "."                   return '.'
 "="                   return '='
 <<EOF>>               return 'EOF'
@@ -251,7 +252,30 @@ e
       throwError($NAME + " is undefined")
      }
     }
-    | e '.#' NAME {
+
+    
+    | 'true' {
+      $$ = true
+    }
+    | 'false' {
+      $$ = false
+    }
+    | e'.' NAME'(' expression_list ')'
+     {if(funcs[$NAME]) $$ = getFunc($NAME).apply(undefined, autoInsertParameters($NAME, $1, $expression_list)); else throwError($NAME + " is undefined")}
+     | e '.$' NAME
+    {
+      if ($1._returnType === "entity") {
+        $$ = {
+          function: "getEntityAttribute",
+          attribute: $NAME,
+          entity: $1,
+          _returnType: $1._returnType
+        }
+      } else {
+        throwError($NAME + " is undefined")
+      }
+    }
+        | e '.#' NAME {
       if($1._returnType !== "player") {
       $$ = {
         function: "getValueOfEntityVariable",
@@ -277,28 +301,6 @@ e
         entity: $1
       }
        }
-    }
-    
-    | 'true' {
-      $$ = true
-    }
-    | 'false' {
-      $$ = false
-    }
-    | e'.' NAME'(' expression_list ')'
-     {if(funcs[$NAME]) $$ = getFunc($NAME).apply(undefined, autoInsertParameters($NAME, $1, $expression_list)); else throwError($NAME + " is undefined")}
-     | e '.$' NAME
-    {
-      if ($1._returnType === "entity") {
-        $$ = {
-          function: "getEntityAttribute",
-          attribute: $NAME,
-          entity: $1,
-          _returnType: $1._returnType
-        }
-      } else {
-        throwError($NAME + " is undefined")
-      }
     }
     | e '.' NAME '=' e {
       $$ = $NAME === 'max' || $NAME === 'min' ? {
