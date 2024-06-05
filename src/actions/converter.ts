@@ -82,7 +82,7 @@ axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
           console.log(k, obj.key, e)
         }
         let count = 0
-        str += `a._returnType === '${k}' ${k === '_' ? '|| true' : ' '} ${!NAMESPACES.includes(k) ? '|| a._returnType === \'entity\'' : ''}? ${JSON.stringify(actionObj)} : ${idx === values.length - 1 ? JSON.stringify(actionObj) : ''}`.replace(/"/g, function (match) {
+        str += `a._returnType === '${k}' ${k === '_' ? '|| true' : ' '} ${!NAMESPACES.includes(k) ? '|| a._returnType === \'entity\'' : ''}? ${JSON.stringify(actionObj)} : ${idx === values.length - 1 ? `${JSON.stringify(actionObj)}}` : ''}`.replace(/"/g, function (match) {
           count++
           return (count > 8) ? '' : match
         })
