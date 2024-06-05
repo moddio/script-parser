@@ -11,11 +11,11 @@ export const aliasTable = {
   getPositionX: 'x', // 'posX',
   getXCoordinateOfRegion: 'x', // 'regionX',
   getYCoordinateOfRegion: 'y', // 'regionY',
-  getOwnerOfItem: 'owner',
   getOwner: 'owner',
+  getOwnerOfItem: 'owner',
   ownerUnitOfSensor: 'owner',
-  getItemTypeOfItem: 'type', // 'itemType',
   getUnitTypeOfUnit: 'type', // 'unitType',
+  getItemTypeOfItem: 'type', // 'itemType',
   playerTypeOfPlayer: 'type', // 'playerType',
   getRandomUnitTypeFromUnitTypeGroup: 'type', // 'randUnitType',
 

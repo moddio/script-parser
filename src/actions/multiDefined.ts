@@ -8,15 +8,15 @@ export const multiDefinedTable: Record<string, Record<string, string>> = {
     region: 'getYCoordinateOfRegion'
   },
   type: {
-    item: 'getItemTypeOfItem',
     unit: 'getUnitTypeOfUnit',
+    item: 'getItemTypeOfItem',
     player: 'playerTypeOfPlayer',
     unitTypeGroup: 'getRandomUnitTypeFromUnitTypeGroup',
     attribute: 'getAttributeTypeOfAttribute'
   },
   owner: {
-    item: 'getOwnerOfItem',
     unit: 'getOwner',
+    item: 'getOwnerOfItem',
     sensor: 'ownerUnitOfSensor'
   },
   max: {
