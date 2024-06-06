@@ -18,11 +18,11 @@ describe('parser', () => {
       parentKey: ''
     })).toBe('thisEntity.type.name')
   })
-  test('thisEntity.type.name', () => { expect(parser.parse('thisEntity.type.name')).toMatchObject({ _returnType: 'string', entity: { _returnType: 'itemType', entity: { _returnType: 'entity', function: 'thisEntity' }, function: 'getItemTypeOfItem' }, function: 'entityName' }) })
+  test('thisEntity.type.name', () => { expect(parser.parse('thisEntity.type.name')).toMatchObject({ _returnType: 'string', entity: { _returnType: 'unitType', entity: { _returnType: 'entity', function: 'thisEntity' }, function: 'getUnitTypeOfUnit' }, function: 'entityName' }) })
   test('if ( 1 > 2)', () => { expect(parser.parse('if (1 > 2)')).toMatchObject({ _returnType: 'system', conditions: [{ operandType: 'number', operator: '>' }, 1, 2], function: 'condition' }) })
-  test('thisEntity.testVar4', () => {
+  test('thisEntity.#testVar4', () => {
     expect(actionToString({
-      o: parser.parse('thisEntity.testVar4'),
+      o: parser.parse('thisEntity.#testVar4'),
       defaultReturnType: '',
       gameData: { unitTypes: {} },
       parentKey: ''
@@ -174,7 +174,7 @@ describe('parser', () => {
     })).toBe("'a' != 'b'")
   })
   test("getSelectedEntity.type == 'homie'", () => {
-    expect(parser.parse("getSelectedEntity.type == 'homie'")).toMatchObject([{ operandType: 'string', operator: '==' }, { entity: { _returnType: 'entity', function: 'getSelectedEntity' }, function: 'getItemTypeOfItem' }, 'homie'])
+    expect(parser.parse("getSelectedEntity.type == 'homie'")).toMatchObject([{ operandType: 'string', operator: '==' }, { entity: { _returnType: 'entity', function: 'getSelectedEntity' }, function: 'getUnitTypeOfUnit' }, 'homie'])
     expect(actionToString({
       o: parser.parse("getSelectedEntity.type == 'homie'"),
       defaultReturnType: '',

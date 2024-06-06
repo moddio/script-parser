@@ -81,12 +81,16 @@ axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
         } catch (e) {
           console.log(k, obj.key, e)
         }
+        let count = 0
         str += `a._returnType === '${k}' ${k === '_' ? '|| true' : ' '} ${!NAMESPACES.includes(k) ? '|| a._returnType === \'entity\'' : ''}? ${JSON.stringify(actionObj)} : ${idx === values.length - 1
-? `${JSON.stringify({
-          function: values[0][1],
-          _returnType: action.data.category
-        })}}`
-: ''}`
+          ? `${JSON.stringify({
+            function: values[0][1],
+            _returnType: action.data.category
+          })}}`
+          : ''}`.replace(/"/g, function (match) {
+            count++
+            return (count > 8) ? '' : match
+          })
       })
       actionsObj[key] = str
     })

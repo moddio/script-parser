@@ -58,6 +58,45 @@ describe('parser_multiline', () => {
   }
 }`
     )
+    expect(actionToString({
+      o: {
+        isProtected: true,
+        triggers: [],
+        conditions: [
+          {
+            operator: '==',
+            operandType: 'boolean'
+          },
+          true,
+          true
+        ],
+        actions: [
+          {
+            type: 'sendChatMessage',
+            message: {
+              function: 'concat',
+              textA: {
+                function: 'getPlayerName',
+                entity: {
+                  function: 'getTriggeringPlayer'
+                }
+              },
+              textB: 'is a driver!'
+            },
+            disabled: true
+          }
+        ],
+        name: 'test',
+        parent: null,
+        key: '',
+        order: 0
+      },
+      defaultReturnType: '',
+      gameData: tmpGameData,
+      parentKey: ''
+    })).toBe(
+      '-- sendChatMessage(getPlayerName(triggeringPlayer) + \'is a driver!\')'
+    )
   })
 })
 
