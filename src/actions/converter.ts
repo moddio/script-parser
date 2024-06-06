@@ -71,6 +71,7 @@ axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
       const notInNameSpaces = values.every((kv) => !NAMESPACES.includes(kv[0]))
       const action = obj.find((o: any) => o.key === values[0][1])
       let str = `${getVars(action, {}, false, notInNameSpaces ? 0 : 1)}{return `
+      const tmpActions: any[] = []
       values.forEach(([k, v], idx) => {
         const actionObj: any = {
           function: v,
@@ -78,15 +79,13 @@ axios.get('https://www.modd.io/api/editor-api/?game=two-houses')
         }
         try {
           getVars(obj.find((o: any) => o.key === v), actionObj, NAMESPACES.includes(k))
+          tmpActions.push(actionObj)
         } catch (e) {
           console.log(k, obj.key, e)
         }
         let count = 0
         str += `a._returnType === '${k}' ${k === '_' ? '|| true' : ' '} ${!NAMESPACES.includes(k) ? '|| a._returnType === \'entity\'' : ''}? ${JSON.stringify(actionObj)} : ${idx === values.length - 1
-          ? `${JSON.stringify({
-            function: values[0][1],
-            _returnType: action.data.category
-          })}}`
+          ? `${JSON.stringify(tmpActions[0])}}`
           : ''}`.replace(/"/g, function (match) {
             count++
             return (count > 8) ? '' : match
